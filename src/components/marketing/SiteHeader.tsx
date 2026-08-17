@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { BRAND, DEMO_SLUG } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
+import { WeekMark } from "@/components/brand/WeekMark";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
 
@@ -68,17 +69,20 @@ export function SiteHeader({
         <div className="mx-auto w-full max-w-5xl">
           <motion.div
             className="glass-island relative flex h-12 overflow-hidden rounded-full sm:h-14"
-            initial={reduce ? false : { width: "7.5rem" }}
+            initial={reduce ? false : { width: "14.5rem" }}
             animate={{ width: "100%" }}
             transition={{ duration: 0.95, ease: EASE }}
           >
             <div className="flex h-12 w-[min(calc(100vw-1.5rem),64rem)] shrink-0 items-center sm:h-14">
               <Link
                 href="/"
-                className="relative z-10 flex h-full shrink-0 items-center px-4 font-display text-lg tracking-tight sm:px-5 sm:text-xl"
+                className="relative z-10 flex h-full shrink-0 items-center gap-2 px-3 font-display text-lg tracking-tight sm:gap-2.5 sm:px-5 sm:text-xl"
               >
-                {BRAND.name}
-                <span className="text-signal">.</span>
+                <span>
+                  {BRAND.name}
+                  <span className="text-signal">.</span>
+                </span>
+                <WeekMark />
               </Link>
 
               <motion.div
@@ -148,7 +152,7 @@ export function SiteHeader({
       </header>
 
       <motion.nav
-        className="glass-island fixed inset-x-3 z-30 md:hidden"
+        className="glass-island fixed inset-x-3 z-30 overflow-hidden rounded-full md:hidden"
         style={{
           bottom: "max(0.55rem, env(safe-area-inset-bottom))",
         }}
@@ -166,14 +170,14 @@ export function SiteHeader({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-[11px] font-medium leading-none",
+                    "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium leading-none",
                     on ? "text-void" : "text-dim",
                   )}
                 >
                   {on ? (
                     <motion.span
                       layoutId="dock-pill"
-                      className="glass-pill absolute inset-0 rounded-2xl"
+                      className="glass-pill absolute inset-0 rounded-full"
                       transition={reduce ? { duration: 0 } : PILL}
                     />
                   ) : null}
