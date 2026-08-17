@@ -12,3 +12,17 @@ export const PRICE = {
 
 export const DEMO_SLUG = "kade";
 export const DEMO_NAME = "Kade";
+
+export const CONTACT = {
+  email: "",
+  whatsapp: "",
+} as const;
+
+export const SOCIAL = {
+  whatsapp: "",
+  instagram: "",
+  x: "",
+  linkedin: "",
+  facebook: "",
+  tiktok: "",
+} as const;

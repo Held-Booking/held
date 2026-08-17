@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { BRAND } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
-import "./globals.css";
+import { FaviconSpread } from "@/components/brand/FaviconSpread";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans-en",
@@ -53,6 +53,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="flex min-h-dvh flex-col overflow-x-clip bg-void font-sans text-paper">
+        <FaviconSpread />
         {children}
       </body>
     </html>

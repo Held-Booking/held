@@ -12,8 +12,14 @@ export function isStripeConfigured() {
   return (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_");
 }
 
+export function paystackSecret() {
+  return (process.env.PAYSTACK_SECRET_KEY ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+}
+
 export function isPaystackConfigured() {
-  return (process.env.PAYSTACK_SECRET_KEY ?? "").startsWith("sk_");
+  return paystackSecret().startsWith("sk_");
 }
 
 export function isResendConfigured() {
@@ -22,6 +28,6 @@ export function isResendConfigured() {
 
 export function isGoogleConfigured() {
   return Boolean(
-    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_CLIENT_ID?.trim() && process.env.GOOGLE_CLIENT_SECRET?.trim(),
   );
 }

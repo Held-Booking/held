@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { dbErrorMessage } from "@/lib/supabase/errors";
+import { appOrigin } from "@/lib/origin";
 import { isValidSlug, slugify } from "@/lib/slug";
 
 type AuthResult = { error: string | null; confirm?: boolean };
@@ -35,7 +36,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
   }
 
   const supabase = await createServerSupabase();
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const origin = await appOrigin();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -77,6 +78,48 @@ export async function signIn(formData: FormData): Promise<AuthResult> {
     .maybeSingle();
 
   redirect(profile?.slug ? "/dashboard" : "/onboarding");
+}
+
+export async function requestPasswordReset(formData: FormData): Promise<AuthResult> {
+  if (!isSupabaseConfigured()) {
+    return { error: "Add your Supabase keys in .env.local first." };
+  }
+
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email.includes("@")) {
+    return { error: "Enter the email on your page." };
+  }
+
+  const supabase = await createServerSupabase();
+  const origin = await appOrigin();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
+  });
+
+  if (error) {
+    const text = error.message.toLowerCase();
+    if (text.includes("rate limit") || text.includes("email rate")) {
+      return { error: "Too many reset emails. Wait a bit, then try again." };
+    }
+  }
+
+  return { error: null, confirm: true };
+}
+
+export async function updatePassword(formData: FormData): Promise<AuthResult> {
+  if (!isSupabaseConfigured()) {
+    return { error: "Add your Supabase keys in .env.local first." };
+  }
+
+  const password = String(formData.get("password") ?? "");
+  if (password.length < 8) {
+    return { error: "Use at least 8 characters." };
+  }
+
+  const supabase = await createServerSupabase();
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: authErrorMessage(error.message) };
+  return { error: null, confirm: true };
 }
 
 export async function signOut() {

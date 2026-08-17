@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { originFromHeaders } from "@/lib/origin";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const origin = process.env.NEXT_PUBLIC_APP_URL ?? url.origin;
+  const origin = originFromHeaders(request.headers, url.origin);
   const next = url.searchParams.get("next") ?? "/onboarding";
   const code = url.searchParams.get("code");
 
@@ -15,5 +16,6 @@ export async function GET(request: Request) {
   const supabase = await createServerSupabase();
   await supabase.auth.exchangeCodeForSession(code);
 
-  return NextResponse.redirect(`${origin}${next}`);
+  const path = next.startsWith("/") ? next : "/onboarding";
+  return NextResponse.redirect(`${origin}${path}`);
 }

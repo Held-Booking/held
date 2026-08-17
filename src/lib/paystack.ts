@@ -1,11 +1,11 @@
 import { createHmac } from "node:crypto";
 import { PLAN_CURRENCY, planAmountCents, type PlanInterval } from "@/lib/plan";
-import { isPaystackConfigured } from "@/lib/supabase/config";
+import { isPaystackConfigured, paystackSecret } from "@/lib/supabase/config";
 
 const API = "https://api.paystack.co";
 
 function secret() {
-  const key = process.env.PAYSTACK_SECRET_KEY ?? "";
+  const key = paystackSecret();
   if (!isPaystackConfigured()) throw new Error("Paystack is not configured.");
   return key;
 }
@@ -69,13 +69,20 @@ export async function initializePaystack(input: {
   }
 }
 
-export async function listPaystackBanks(currency = "NGN") {
-  const result = await paystack<{
-    data: Array<{ name: string; code: string; active: boolean }>;
-  }>(`/bank?currency=${encodeURIComponent(currency)}&perPage=100`);
+const PAYSTACK_BANK_COUNTRY: Record<string, string> = {
+  NG: "nigeria",
+  GH: "ghana",
+  KE: "kenya",
+  ZA: "south africa",
+  CI: "ivory coast",
+};
+
+type PaystackBank = { name: string; code: string; active?: boolean };
+
+function uniqueBanks(rows: PaystackBank[]) {
   const seen = new Set<string>();
-  return (result.data ?? [])
-    .filter((bank) => bank.active && bank.code)
+  return rows
+    .filter((bank) => bank.active !== false && bank.code)
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((bank) => {
       if (seen.has(bank.code)) return false;
@@ -83,6 +90,36 @@ export async function listPaystackBanks(currency = "NGN") {
       return true;
     })
     .map((bank) => ({ name: bank.name, code: bank.code }));
+}
+
+export async function listPaystackBanks(country = "NG") {
+  const slug = PAYSTACK_BANK_COUNTRY[country.toUpperCase()] ?? "nigeria";
+  const pages: PaystackBank[] = [];
+
+  try {
+    let path = `/bank?country=${encodeURIComponent(slug)}&perPage=100&use_cursor=true`;
+    for (let i = 0; i < 8; i += 1) {
+      const result = await paystack<{
+        data: PaystackBank[];
+        meta?: { next?: string | null; next_cursor?: string | null };
+      }>(path);
+      pages.push(...(result.data ?? []));
+      const next = result.meta?.next || result.meta?.next_cursor;
+      if (!next) break;
+      path = `/bank?country=${encodeURIComponent(slug)}&perPage=100&use_cursor=true&next=${encodeURIComponent(next)}`;
+    }
+  } catch {
+    pages.length = 0;
+  }
+
+  if (pages.length === 0) {
+    const fallback = await paystack<{ data: PaystackBank[] }>(
+      `/bank?country=${encodeURIComponent(slug)}`,
+    );
+    pages.push(...(fallback.data ?? []));
+  }
+
+  return uniqueBanks(pages);
 }
 
 export async function resolvePaystackAccount(

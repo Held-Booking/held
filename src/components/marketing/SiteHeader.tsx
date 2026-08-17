@@ -11,12 +11,6 @@ import { WeekMark } from "@/components/brand/WeekMark";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
 
-const NAV_ICONS = {
-  home: IconHome,
-  demo: IconDemo,
-  pricing: IconPrice,
-};
-
 const EASE = [0.16, 1, 0.3, 1] as const;
 const PILL = {
   type: "spring" as const,
@@ -54,10 +48,11 @@ export function SiteHeader({
   const pathname = usePathname();
   const reduce = useReducedMotion() === true;
   const [hover, setHover] = useState<string | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
   const NAV = [
-    { href: "/", label: labels.home, icon: IconHome },
-    { href: `/book/${DEMO_SLUG}`, label: labels.demo, icon: IconDemo },
-    { href: "/pricing", label: labels.pricing, icon: IconPrice },
+    { href: "/", label: labels.home, icon: IconHome, laptop: true },
+    { href: `/book/${DEMO_SLUG}`, label: labels.demo, icon: IconDemo, laptop: false },
+    { href: "/pricing", label: labels.pricing, icon: IconPrice, laptop: true },
   ];
 
   return (
@@ -107,6 +102,7 @@ export function SiteHeader({
                           className={cn(
                             "relative rounded-full px-4 py-1.5 text-sm",
                             on ? "text-void" : "text-dim hover:text-paper",
+                            !item.laptop && "lg:hidden",
                           )}
                         >
                           {on ? (
@@ -132,18 +128,41 @@ export function SiteHeader({
 
                 <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
                   <LanguageSwitcher current={lang} />
-                  <Link
-                    href="/login"
-                    className="glass-chip hidden min-h-9 items-center rounded-full px-3 text-sm text-dim hover:text-paper lg:inline-flex"
-                  >
-                    {labels.login}
-                  </Link>
                   <ButtonLink
                     href="/signup"
-                    className="h-9 min-h-9 px-4 text-sm sm:h-10 sm:min-h-10 sm:px-5"
+                    className="h-9 min-h-9 px-4 text-sm sm:h-10 sm:min-h-10 sm:px-5 lg:hidden"
                   >
                     {labels.start}
                   </ButtonLink>
+                  <div
+                    className="hidden items-center lg:flex"
+                    onMouseEnter={() => setAuthOpen(true)}
+                    onMouseLeave={() => setAuthOpen(false)}
+                  >
+                    <div
+                      className={cn(
+                        "grid min-w-0 transition-[grid-template-columns,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                        authOpen || reduce
+                          ? "grid-cols-[1fr] opacity-100"
+                          : "grid-cols-[0fr] opacity-0",
+                      )}
+                    >
+                      <div className="overflow-hidden">
+                        <Link
+                          href="/login"
+                          className="glass-chip mr-2 inline-flex h-10 min-h-10 shrink-0 items-center whitespace-nowrap rounded-full px-4 text-sm text-dim hover:text-paper"
+                        >
+                          {labels.login}
+                        </Link>
+                      </div>
+                    </div>
+                    <ButtonLink
+                      href="/signup"
+                      className="h-10 min-h-10 px-5 text-sm"
+                    >
+                      {labels.start}
+                    </ButtonLink>
+                  </div>
                 </div>
               </motion.div>
             </div>

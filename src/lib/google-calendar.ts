@@ -4,33 +4,34 @@ const AUTH = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN = "https://oauth2.googleapis.com/token";
 const CAL = "https://www.googleapis.com/calendar/v3";
 
-function origin() {
-  return process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
+export function googleRedirectUri(origin: string) {
+  return `${origin.replace(/\/$/, "")}/api/google/callback`;
 }
 
-export function googleConnectUrl(state?: string) {
+export function googleConnectUrl(origin: string, state?: string) {
   if (!isGoogleConfigured()) return null;
   const params = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    redirect_uri: `${origin()}/api/google/callback`,
+    client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
+    redirect_uri: googleRedirectUri(origin),
     response_type: "code",
     scope: "https://www.googleapis.com/auth/calendar.events",
     access_type: "offline",
     prompt: "consent",
+    include_granted_scopes: "true",
   });
   if (state) params.set("state", state);
   return `${AUTH}?${params.toString()}`;
 }
 
-export async function exchangeGoogleCode(code: string) {
+export async function exchangeGoogleCode(origin: string, code: string) {
   const res = await fetch(TOKEN, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-      redirect_uri: `${origin()}/api/google/callback`,
+      client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!.trim(),
+      redirect_uri: googleRedirectUri(origin),
       grant_type: "authorization_code",
     }),
   });
@@ -38,9 +39,12 @@ export async function exchangeGoogleCode(code: string) {
     refresh_token?: string;
     access_token?: string;
     error?: string;
+    error_description?: string;
   };
   if (!res.ok || !json.refresh_token) {
-    throw new Error(json.error ?? "Google did not return a refresh token.");
+    throw new Error(
+      json.error_description ?? json.error ?? "Google did not return a refresh token.",
+    );
   }
   return json.refresh_token;
 }
@@ -51,8 +55,8 @@ async function accessToken(refreshToken: string) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       refresh_token: refreshToken,
-      client_id: process.env.GOOGLE_CLIENT_ID!,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!.trim(),
       grant_type: "refresh_token",
     }),
   });

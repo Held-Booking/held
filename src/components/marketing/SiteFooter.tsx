@@ -1,20 +1,29 @@
 import Link from "next/link";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
-import { BRAND } from "@/lib/constants";
+import { BRAND, SOCIAL } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
 
+const SOCIAL_ITEMS = [
+  { href: SOCIAL.whatsapp, label: "WhatsApp" },
+  { href: SOCIAL.instagram, label: "Instagram" },
+  { href: SOCIAL.x, label: "X" },
+  { href: SOCIAL.linkedin, label: "LinkedIn" },
+  { href: SOCIAL.facebook, label: "Facebook" },
+  { href: SOCIAL.tiktok, label: "TikTok" },
+] as const;
+
 export function SiteFooter({
-  lang,
   labels,
 }: {
-  lang: Locale;
-  labels: { pricing: string; terms: string; privacy: string };
+  lang?: Locale;
+  labels: { pricing: string; terms: string; privacy: string; contact: string };
 }) {
   const links = [
     { href: "/pricing", label: labels.pricing },
+    { href: "/contact", label: labels.contact },
     { href: "/terms", label: labels.terms },
     { href: "/privacy", label: labels.privacy },
   ];
+  const socials = SOCIAL_ITEMS.filter((item) => item.href);
 
   return (
     <footer className="relative z-10 mt-auto border-t border-line">
@@ -36,7 +45,17 @@ export function SiteFooter({
               {item.label}
             </Link>
           ))}
-          <LanguageSwitcher current={lang} />
+          {socials.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center hover:text-signal"
+            >
+              {item.label}
+            </a>
+          ))}
         </nav>
       </div>
     </footer>

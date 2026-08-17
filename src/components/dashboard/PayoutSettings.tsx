@@ -44,23 +44,57 @@ export function PayoutSettings({
   const [saved, setSaved] = useState(false);
   const [pending, startTransition] = useTransition();
   const [banks, setBanks] = useState<Bank[]>([]);
+  const [banksLoading, setBanksLoading] = useState(paystackCountry);
+  const [banksError, setBanksError] = useState<string | null>(null);
   const [verifiedName, setVerifiedName] = useState(accountName);
+  const [googleHint, setGoogleHint] = useState<string | null>(null);
+  const [siteOrigin, setSiteOrigin] = useState("");
+
+  useEffect(() => {
+    const origin = window.location.origin;
+    setSiteOrigin(origin);
+    const err = new URLSearchParams(window.location.search).get("google");
+    if (!err) return;
+    const redirect = `${origin}/api/google/callback`;
+    if (err === "access_denied") {
+      setGoogleHint("Google connect was cancelled.");
+      return;
+    }
+    setGoogleHint(
+      `Google could not finish connect. In Google Cloud, create a Web client, turn on the Google Calendar API, add your Google account as a test user, and add this exact Authorized redirect URI: ${redirect}`,
+    );
+  }, []);
 
   useEffect(() => {
     if (!paystackCountry) return;
     let alive = true;
-    fetch(`/api/banks?currency=${encodeURIComponent(currency)}`)
-      .then((res) => res.json())
-      .then((data: { banks?: Bank[] }) => {
-        if (alive) setBanks(data.banks ?? []);
+    setBanksLoading(true);
+    setBanksError(null);
+    fetch(`/api/banks?country=${encodeURIComponent(country)}`, {
+      credentials: "same-origin",
+      cache: "no-store",
+    })
+      .then(async (res) => {
+        const data = (await res.json()) as { banks?: Bank[]; error?: string };
+        if (!alive) return;
+        setBanks(data.banks ?? []);
+        if (data.error && (data.banks ?? []).length === 0) {
+          setBanksError(data.error);
+        }
       })
       .catch(() => {
-        if (alive) setBanks([]);
+        if (alive) {
+          setBanks([]);
+          setBanksError("Could not load banks. Refresh and try again.");
+        }
+      })
+      .finally(() => {
+        if (alive) setBanksLoading(false);
       });
     return () => {
       alive = false;
     };
-  }, [currency, paystackCountry]);
+  }, [country, paystackCountry]);
 
   return (
     <div>
@@ -279,9 +313,12 @@ export function PayoutSettings({
               ))}
             </select>
           </label>
-          {banks.length === 0 ? (
+          {banksLoading ? (
+            <p className="text-sm text-dim">Loading banks...</p>
+          ) : banks.length === 0 ? (
             <p className="text-sm text-dim">
-              Bank list is empty. Confirm PAYSTACK_SECRET_KEY is in .env.local, then restart the app.
+              {banksError ??
+                "No banks loaded. Refresh this page. If it stays empty, the Paystack key on the server is missing or invalid."}
             </p>
           ) : null}
           <label className="block text-sm text-dim">
@@ -343,6 +380,11 @@ export function PayoutSettings({
         <p className="mt-3 text-sm text-dim">
           {googleOn ? googleOnCopy : googleOffCopy}
         </p>
+        {googleHint ? (
+          <p className="mt-3 rounded-xl border border-line bg-void-2 px-4 py-3 text-sm">
+            {googleHint}
+          </p>
+        ) : null}
         {googleReady ? (
           googleOn ? (
             <form
@@ -374,9 +416,14 @@ export function PayoutSettings({
           )
         ) : (
           <p className="mt-3 text-sm text-dim">
-            Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to .env.local to connect a calendar.
+            Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, then add this redirect URI in Google Cloud: the site address plus /api/google/callback
           </p>
         )}
+        {siteOrigin ? (
+          <p className="mt-3 text-xs text-dim">
+            Google Cloud Authorized redirect URI: {siteOrigin}/api/google/callback
+          </p>
+        ) : null}
       </div>
     </div>
   );

@@ -113,6 +113,14 @@ export function AuthForm({
                 className="mt-2 min-h-12 w-full rounded-xl border border-line bg-void px-4 text-base text-paper placeholder:text-dim/60"
               />
             </label>
+            {mode === "login" ? (
+              <Link
+                href="/forgot-password"
+                className="block text-sm text-dim hover:text-signal"
+              >
+                {copy?.forgot ?? "Forgot your password?"}
+              </Link>
+            ) : null}
             <button
               type="submit"
               disabled={pending || !ready}
