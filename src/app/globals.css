@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+:root {
+  --void: #07080a;
+  --void-2: #101216;
+  --paper: #f3f4f6;
+  --dim: #c5c8d0;
+  --line: rgba(243, 244, 246, 0.12);
+  --signal: #7eb4ff;
+  --signal-dim: rgba(126, 180, 255, 0.16);
+}
+
+@theme inline {
+  --color-void: var(--void);
+  --color-void-2: var(--void-2);
+  --color-paper: var(--paper);
+  --color-dim: var(--dim);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --color-signal-dim: var(--signal-dim);
+  --font-sans: var(--font-sans-en);
+  --font-display: var(--font-display-en);
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--void);
+  color: var(--paper);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 800;
+}
+
+input,
+select,
+textarea {
+  box-sizing: border-box;
+  font-size: 1rem;
+  max-width: 100%;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--void);
+}
+
+html[lang="ar"] {
+  font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, var(--font-sans), system-ui, sans-serif;
+}
+
+html[lang="ar"] .font-display {
+  font-family: "Noto Sans Arabic", "Segoe UI", var(--font-display), sans-serif;
+  letter-spacing: 0;
+}
+
+html[lang="zh"] {
+  font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", var(--font-sans), system-ui, sans-serif;
+}
+
+html[lang="zh"] .font-display {
+  font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", var(--font-display), sans-serif;
+  letter-spacing: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.glass-island {
+  background: rgba(16, 18, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 28px rgba(0, 0, 0, 0.28);
+  transform: translateZ(0);
+}
+
+.glass-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.glass-pill {
+  background: #f3f4f6;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass-island {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    -webkit-backdrop-filter: blur(14px) saturate(165%);
+    backdrop-filter: blur(14px) saturate(165%);
+  }
+
+  .glass-chip {
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    backdrop-filter: blur(10px) saturate(140%);
+  }
+}
+
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.horizon {
+  background-image:
+    linear-gradient(rgba(126, 180, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 180, 255, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform-origin: center top;
+  animation: horizon-run 18s linear infinite;
+}
+
+@keyframes horizon-run {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 56px;
+  }
+}
+
+.scan {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(126, 180, 255, 0.32),
+    transparent
+  );
+  animation: scan 3.2s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0%,
+  100% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+  40%,
+  60% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(220%);
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .horizon,
+  .scan,
+  .pulse-ring,
+  html {
+    animation: none !important;
+    scroll-behavior: auto;
+  }
+}

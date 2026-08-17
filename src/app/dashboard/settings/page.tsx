@@ -1,0 +1,35 @@
+import type { Metadata } from "next";
+import { PayoutSettings } from "@/components/dashboard/PayoutSettings";
+import { dict } from "@/lib/i18n";
+import { getLang } from "@/lib/i18n/server";
+import { isGoogleConfigured } from "@/lib/supabase/config";
+import { requireVendor } from "@/lib/supabase/vendor";
+
+export const metadata: Metadata = { title: "Settings" };
+export const dynamic = "force-dynamic";
+
+export default async function SettingsPage() {
+  const { profile } = await requireVendor();
+  const t = dict(await getLang());
+  return (
+    <PayoutSettings
+      country={(profile.country as string) || "NG"}
+      currency={(profile.currency as string) || "NGN"}
+      bio={(profile.bio as string) || ""}
+      whatsapp={(profile.whatsapp as string) || ""}
+      bankCode={(profile.bank_code as string) || ""}
+      accountNumber={(profile.account_number as string) || ""}
+      accountName={(profile.account_name as string) || ""}
+      connected={Boolean(profile.paystack_subaccount)}
+      photo={(profile.logo_url as string) || ""}
+      googleOn={Boolean(
+        (profile as { google_refresh_token?: string | null }).google_refresh_token,
+      )}
+      googleReady={isGoogleConfigured()}
+      googleTitle={t.dash.google}
+      googleOnCopy={t.dash.googleOn}
+      googleOffCopy={t.dash.googleOff}
+      connectGoogle={t.dash.connectGoogle}
+    />
+  );
+}

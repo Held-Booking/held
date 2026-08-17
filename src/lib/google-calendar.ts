@@ -1,0 +1,109 @@
+import { isGoogleConfigured } from "@/lib/supabase/config";
+
+const AUTH = "https://accounts.google.com/o/oauth2/v2/auth";
+const TOKEN = "https://oauth2.googleapis.com/token";
+const CAL = "https://www.googleapis.com/calendar/v3";
+
+function origin() {
+  return process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
+}
+
+export function googleConnectUrl(state?: string) {
+  if (!isGoogleConfigured()) return null;
+  const params = new URLSearchParams({
+    client_id: process.env.GOOGLE_CLIENT_ID!,
+    redirect_uri: `${origin()}/api/google/callback`,
+    response_type: "code",
+    scope: "https://www.googleapis.com/auth/calendar.events",
+    access_type: "offline",
+    prompt: "consent",
+  });
+  if (state) params.set("state", state);
+  return `${AUTH}?${params.toString()}`;
+}
+
+export async function exchangeGoogleCode(code: string) {
+  const res = await fetch(TOKEN, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID!,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirect_uri: `${origin()}/api/google/callback`,
+      grant_type: "authorization_code",
+    }),
+  });
+  const json = (await res.json()) as {
+    refresh_token?: string;
+    access_token?: string;
+    error?: string;
+  };
+  if (!res.ok || !json.refresh_token) {
+    throw new Error(json.error ?? "Google did not return a refresh token.");
+  }
+  return json.refresh_token;
+}
+
+async function accessToken(refreshToken: string) {
+  const res = await fetch(TOKEN, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      refresh_token: refreshToken,
+      client_id: process.env.GOOGLE_CLIENT_ID!,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      grant_type: "refresh_token",
+    }),
+  });
+  const json = (await res.json()) as { access_token?: string };
+  if (!json.access_token) throw new Error("Google access token failed.");
+  return json.access_token;
+}
+
+export async function upsertGoogleEvent(input: {
+  refreshToken: string;
+  calendarId?: string | null;
+  eventId?: string | null;
+  title: string;
+  start: string;
+  end: string;
+  description?: string;
+}) {
+  if (!isGoogleConfigured()) return null;
+  const token = await accessToken(input.refreshToken);
+  const calendarId = encodeURIComponent(input.calendarId || "primary");
+  const body = {
+    summary: input.title,
+    description: input.description ?? "",
+    start: { dateTime: input.start },
+    end: { dateTime: input.end },
+  };
+  const url = input.eventId
+    ? `${CAL}/calendars/${calendarId}/events/${encodeURIComponent(input.eventId)}`
+    : `${CAL}/calendars/${calendarId}/events`;
+  const res = await fetch(url, {
+    method: input.eventId ? "PATCH" : "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const json = (await res.json()) as { id?: string };
+  return json.id ?? input.eventId ?? null;
+}
+
+export async function deleteGoogleEvent(input: {
+  refreshToken: string;
+  calendarId?: string | null;
+  eventId: string;
+}) {
+  if (!isGoogleConfigured()) return;
+  const token = await accessToken(input.refreshToken);
+  const calendarId = encodeURIComponent(input.calendarId || "primary");
+  await fetch(
+    `${CAL}/calendars/${calendarId}/events/${encodeURIComponent(input.eventId)}`,
+    { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },
+  );
+}
