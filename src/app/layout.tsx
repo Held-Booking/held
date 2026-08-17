@@ -4,6 +4,7 @@ import { BRAND } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { FaviconSpread } from "@/components/brand/FaviconSpread";
+import "./globals.css";
 
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans-en",

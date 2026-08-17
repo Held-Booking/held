@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { BRAND, DEMO_SLUG } from "@/lib/constants";
@@ -46,7 +46,10 @@ export function SiteHeader({
   };
 }) {
   const pathname = usePathname();
-  const reduce = useReducedMotion() === true;
+  const prefersReduce = useReducedMotion();
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+  const reduce = hydrated && prefersReduce === true;
   const [hover, setHover] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
   const NAV = [
@@ -64,11 +67,11 @@ export function SiteHeader({
         <div className="mx-auto w-full max-w-5xl">
           <motion.div
             className="glass-island relative flex h-12 overflow-hidden rounded-full sm:h-14"
-            initial={reduce ? false : { width: "14.5rem" }}
-            animate={{ width: "100%" }}
-            transition={{ duration: 0.95, ease: EASE }}
+            initial={false}
+            animate={{ width: hydrated ? "100%" : "14.5rem" }}
+            transition={{ duration: reduce ? 0 : 0.95, ease: EASE }}
           >
-            <div className="flex h-12 w-[min(calc(100vw-1.5rem),64rem)] shrink-0 items-center sm:h-14">
+            <div className="flex h-12 w-full shrink-0 items-center sm:h-14">
               <Link
                 href="/"
                 className="relative z-10 flex h-full shrink-0 items-center gap-2 px-3 font-display text-lg tracking-tight sm:gap-2.5 sm:px-5 sm:text-xl"
@@ -82,9 +85,12 @@ export function SiteHeader({
 
               <motion.div
                 className="flex min-w-0 flex-1 items-center justify-between gap-2 pr-1.5 sm:pr-2"
-                initial={reduce ? false : { opacity: 0, x: -22 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55, delay: reduce ? 0 : 0.32, ease: EASE }}
+                initial={false}
+                animate={{
+                  opacity: hydrated ? 1 : 0,
+                  x: hydrated ? 0 : -22,
+                }}
+                transition={{ duration: reduce ? 0 : 0.55, delay: reduce ? 0 : 0.32, ease: EASE }}
               >
                 <nav className="hidden min-w-0 flex-1 justify-center md:flex">
                   <div
@@ -175,9 +181,9 @@ export function SiteHeader({
         style={{
           bottom: "max(0.55rem, env(safe-area-inset-bottom))",
         }}
-        initial={reduce ? false : { opacity: 0, y: 12 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: reduce ? 0 : 0.2, ease: EASE }}
+        transition={{ duration: reduce ? 0 : 0.45, delay: reduce ? 0 : 0.2, ease: EASE }}
       >
         <div className="grid grid-cols-4 p-1">
           {[...NAV, { href: "/login", label: labels.login, icon: IconLogin }].map(
@@ -216,6 +222,8 @@ function IconHome() {
   return (
     <svg
       viewBox="0 0 24 24"
+      width="18"
+      height="18"
       className="relative z-10 h-[18px] w-[18px]"
       fill="none"
       stroke="currentColor"
@@ -231,6 +239,8 @@ function IconDemo() {
   return (
     <svg
       viewBox="0 0 24 24"
+      width="18"
+      height="18"
       className="relative z-10 h-[18px] w-[18px]"
       fill="none"
       stroke="currentColor"
@@ -247,6 +257,8 @@ function IconPrice() {
   return (
     <svg
       viewBox="0 0 24 24"
+      width="18"
+      height="18"
       className="relative z-10 h-[18px] w-[18px]"
       fill="none"
       stroke="currentColor"
@@ -262,6 +274,8 @@ function IconLogin() {
   return (
     <svg
       viewBox="0 0 24 24"
+      width="18"
+      height="18"
       className="relative z-10 h-[18px] w-[18px]"
       fill="none"
       stroke="currentColor"

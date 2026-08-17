@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useAnimationControls, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
@@ -94,9 +94,14 @@ async function playSpread(controls: ReturnType<typeof useAnimationControls>) {
 export function WeekMark({ className }: { className?: string }) {
   const reduce = useReducedMotion() === true;
   const controls = useAnimationControls();
+  const [live, setLive] = useState(false);
 
   useEffect(() => {
-    if (reduce) return;
+    setLive(true);
+  }, []);
+
+  useEffect(() => {
+    if (!live || reduce) return;
 
     void playSpread(controls);
 
@@ -112,11 +117,13 @@ export function WeekMark({ className }: { className?: string }) {
       window.clearInterval(id);
       controls.stop();
     };
-  }, [reduce, controls]);
+  }, [live, reduce, controls]);
 
   return (
     <svg
       viewBox="0 0 52 14"
+      width="85"
+      height="22"
       className={cn(
         "week-mark pointer-events-none h-[22px] w-[5.3rem] shrink-0 overflow-visible sm:h-[26px] sm:w-[6.6rem] md:h-7 md:w-[7.7rem]",
         className,
@@ -125,7 +132,7 @@ export function WeekMark({ className }: { className?: string }) {
       focusable="false"
     >
       {DOTS.map((dot) =>
-        reduce ? (
+        !live || reduce ? (
           <circle
             key={dot.spreadX}
             cx={dot.openX}
