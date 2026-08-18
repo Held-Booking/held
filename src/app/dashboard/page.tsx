@@ -4,13 +4,14 @@ import { CopyLink } from "@/components/dashboard/CopyLink";
 import { PAYSTACK_COUNTRIES } from "@/lib/gateways";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { pagePathLabel } from "@/lib/page-url";
 import { planDaysLeft, planIsLive } from "@/lib/plan";
 import { requireVendor } from "@/lib/supabase/vendor";
 import { addCalendarDays, instantFromZoned, zonedParts } from "@/lib/timezone";
 import { formatWhen } from "@/lib/when";
 
 export const metadata: Metadata = {
-  title: "Today",
+  title: "Home",
 };
 
 export const dynamic = "force-dynamic";
@@ -106,16 +107,18 @@ export default async function DashboardHomePage() {
   return (
     <div>
       <p className="text-[10px] uppercase tracking-[0.32em] text-signal">
-        today
+        home
       </p>
       <h1 className="mt-3 font-display text-3xl sm:text-4xl">
         {profile.display_name}
       </h1>
-      <p className="mt-3 text-dim">held.app/{profile.slug}</p>
+      <p className="mt-3 text-dim">{pagePathLabel(origin, profile.slug as string)}</p>
       <p className="mx-auto mt-6 max-w-md text-dim lg:mx-0">
-        {ready
-          ? "Your page can take a date and a deposit."
-          : "Finish setup. Then share the link."}
+        {ready && live
+          ? t.dash.pageReady
+          : ready && !live
+            ? t.dash.pausedPage
+            : t.dash.finishSetup}
       </p>
 
       <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">

@@ -5,13 +5,13 @@ import { deflateSync } from "node:zlib";
 const WEEK_SIDE = "#7a808a";
 const WEEK_CENTER = "#7eb4ff";
 const WEEK_DOTS = [
-  { x: 0.18, r: 0.048, center: false },
-  { x: 0.3, r: 0.048, center: false },
-  { x: 0.42, r: 0.048, center: false },
-  { x: 0.5, r: 0.096, center: true },
-  { x: 0.58, r: 0.048, center: false },
-  { x: 0.7, r: 0.048, center: false },
-  { x: 0.82, r: 0.048, center: false },
+  { x: 0.08, r: 0.09, center: false },
+  { x: 0.22, r: 0.09, center: false },
+  { x: 0.36, r: 0.09, center: false },
+  { x: 0.5, r: 0.17, center: true },
+  { x: 0.64, r: 0.09, center: false },
+  { x: 0.78, r: 0.09, center: false },
+  { x: 0.92, r: 0.09, center: false },
 ];
 
 function crc32(buf) {
@@ -87,36 +87,69 @@ function drawCircle(rgba, w, h, cx, cy, r, rgb) {
   }
 }
 
-function weekPng(size) {
+function weekPng(size, fill) {
   const rgba = Buffer.alloc(size * size * 4);
+  if (fill) {
+    const [r, g, b] = parseHex(fill);
+    for (let i = 0; i < rgba.length; i += 4) {
+      rgba[i] = r;
+      rgba[i + 1] = g;
+      rgba[i + 2] = b;
+      rgba[i + 3] = 255;
+    }
+  }
   const cy = size / 2;
-  const cx = size / 2;
   for (const dot of WEEK_DOTS) {
-    const x = cx + (dot.x * size - cx) * 1.08;
-    const r = dot.r * size;
     drawCircle(
       rgba,
       size,
       size,
-      x,
+      dot.x * size,
       cy,
-      r,
+      dot.r * size,
       parseHex(dot.center ? WEEK_CENTER : WEEK_SIDE),
     );
   }
   return encodePng(size, size, rgba);
 }
 
+function encodeIco(png, size) {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(1, 4);
+  const entry = Buffer.alloc(16);
+  entry[0] = size >= 256 ? 0 : size;
+  entry[1] = size >= 256 ? 0 : size;
+  entry.writeUInt16LE(1, 4);
+  entry.writeUInt16LE(32, 6);
+  entry.writeUInt32LE(png.length, 8);
+  entry.writeUInt32LE(22, 12);
+  return Buffer.concat([header, entry, png]);
+}
+
 const root = join(import.meta.dirname, "..");
+const png32 = weekPng(32, null);
+const png48 = weekPng(48, null);
+const png180 = weekPng(180, "#07080a");
+const png192 = weekPng(192, null);
+const png512 = weekPng(512, null);
+const ico = encodeIco(png32, 32);
+
 const files = [
-  [join(root, "src/app/icon.png"), 64],
-  [join(root, "src/app/apple-icon.png"), 180],
-  [join(root, "public/held-mark.png"), 512],
+  [join(root, "src/app/favicon.ico"), ico],
+  [join(root, "src/app/icon.png"), png48],
+  [join(root, "src/app/apple-icon.png"), png180],
+  [join(root, "public/favicon.ico"), ico],
+  [join(root, "public/favicon-32.png"), png32],
+  [join(root, "public/icon-192.png"), png192],
+  [join(root, "public/icon-512.png"), png512],
+  [join(root, "public/apple-touch-icon.png"), png180],
+  [join(root, "public/held-mark.png"), png512],
 ];
 
-for (const [path, size] of files) {
+for (const [path, png] of files) {
   await mkdir(dirname(path), { recursive: true });
-  const png = weekPng(size);
   await new Promise((resolve, reject) => {
     const stream = createWriteStream(path);
     stream.on("finish", resolve);

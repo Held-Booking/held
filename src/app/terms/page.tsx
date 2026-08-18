@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Terms" };
 export default function TermsPage() {
   return (
     <LegalPage kicker="legal" title="Terms">
-      <p>Last updated 17 August 2026.</p>
+      <p>Last updated 18 August 2026.</p>
       <p>
         These terms are the agreement between you and Held when you create a page, book a page, or otherwise use the service. Held is booking software. You get a public page. Clients pick a package, a time, and pay a deposit to hold it. Held is not a marketplace, not an employer, and not a party to the job between the professional and the client.
       </p>
@@ -26,7 +26,7 @@ export default function TermsPage() {
         A booking is held when the deposit is paid through checkout, not when someone messages you. Card and transfer payments run on Paystack where that is the processor for your country. When a payout bank is on file, client deposits are meant to land with you. Until that bank is saved, a deposit may land with Held’s Paystack account and need to be moved. Held does not take a percentage of the job.
       </p>
       <p>
-        Held’s own fee is $12 a month or $99 a year after a 14 day trial. That fee is separate from client deposits. Paying it may require an international card or USD on Paystack. If the trial or subscription lapses, the public page may stop taking new deposits until billing is current. Existing confirmed bookings remain visible to you.
+        Held’s own fee is $12 a month or $99 a year after a 14 day trial. That fee is separate from client deposits. Paying it may require an international card or USD on Paystack. If the trial or subscription lapses, you can still open your dashboard, see bookings, and edit your page. The public link stays visible. New deposits pause until billing is current. Existing confirmed bookings remain.
       </p>
       <p>
         Cancellation and reschedule rules on a booking follow what the professional set and what the manage link still allows. The deposit stays with the professional unless you both agree otherwise outside Held. Held does not hold job money as an escrow service.

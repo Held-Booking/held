@@ -49,7 +49,7 @@ export function DateLock({
               {DEMO_NAME}
             </p>
             <p className="mt-0.5 truncate text-xs text-dim sm:text-sm">
-              held.app/{DEMO_SLUG}
+              /book/{DEMO_SLUG}
             </p>
           </div>
           <span className="flex shrink-0 items-center gap-2 text-xs text-paper">

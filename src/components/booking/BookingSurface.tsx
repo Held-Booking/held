@@ -332,9 +332,11 @@ export function BookingSurface({
                 <p className="rounded-[1.35rem] border border-dashed border-line px-4 py-6 text-center text-sm text-dim">
                   {page.isDemo
                     ? copy.demoOnly
-                    : page.bankReady
-                      ? copy.notOpen
-                      : copy.needBank}
+                    : !page.planLive
+                      ? copy.pausedPlan
+                      : page.bankReady
+                        ? copy.notOpen
+                        : copy.needBank}
                 </p>
               )}
               {payError ? (

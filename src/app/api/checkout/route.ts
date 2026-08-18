@@ -102,9 +102,12 @@ export async function POST(request: NextRequest) {
   }
 
   const expiresAt = (profile as { plan_expires_at?: string | null }).plan_expires_at;
-  if (typeof expiresAt === "string" && !planIsLive(expiresAt)) {
+  if ("plan_expires_at" in (profile as object) && !planIsLive(expiresAt)) {
     return NextResponse.json(
-      { error: "This page is not taking deposits right now." },
+      {
+        error:
+          "This page is paused. The professional needs to renew Held to take deposits.",
+      },
       { status: 403 },
     );
   }

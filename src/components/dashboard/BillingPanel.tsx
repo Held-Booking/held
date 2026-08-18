@@ -64,7 +64,7 @@ export function BillingPanel({
             ? `You are on ${interval === "yearly" ? "yearly" : "monthly"} Held. Paid through ${expiresLabel}.`
             : live
               ? `${daysLeft} day${daysLeft === 1 ? "" : "s"} left on the trial.`
-              : "The trial ended. Pay to keep taking deposits."}
+              : "The trial ended. Pay Held to keep taking deposits. Your dashboard stays open. The public link is paused."}
         </p>
       </div>
 

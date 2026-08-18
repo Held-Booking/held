@@ -3,6 +3,8 @@
 import { useEffect, useState, useTransition } from "react";
 import { disconnectGoogle, resolveBank, saveBank, saveBio, savePhoto, savePayout, saveWhatsapp } from "@/app/dashboard/actions";
 import { COUNTRIES, PAYSTACK_COUNTRIES } from "@/lib/gateways";
+import { PasswordSettings } from "@/components/dashboard/PasswordSettings";
+import type { Messages } from "@/lib/i18n";
 
 type Bank = { name: string; code: string };
 
@@ -22,6 +24,7 @@ export function PayoutSettings({
   googleOnCopy = "New bookings land on your Google Calendar.",
   googleOffCopy = "Connect Google to put bookings on your calendar.",
   connectGoogle = "Connect Google",
+  passwordCopy,
 }: {
   country: string;
   currency: string;
@@ -38,6 +41,7 @@ export function PayoutSettings({
   googleOnCopy?: string;
   googleOffCopy?: string;
   connectGoogle?: string;
+  passwordCopy?: Messages["auth"];
 }) {
   const paystackCountry = PAYSTACK_COUNTRIES.has(country.toUpperCase());
   const [error, setError] = useState<string | null>(null);
@@ -49,19 +53,36 @@ export function PayoutSettings({
   const [verifiedName, setVerifiedName] = useState(accountName);
   const [googleHint, setGoogleHint] = useState<string | null>(null);
   const [siteOrigin, setSiteOrigin] = useState("");
+  const [copiedUri, setCopiedUri] = useState(false);
 
   useEffect(() => {
     const origin = window.location.origin;
     setSiteOrigin(origin);
-    const err = new URLSearchParams(window.location.search).get("google");
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get("google");
+    const reason = (params.get("reason") ?? "").toLowerCase();
     if (!err) return;
     const redirect = `${origin}/api/google/callback`;
     if (err === "access_denied") {
-      setGoogleHint("Google connect was cancelled.");
+      setGoogleHint(
+        "Google blocked connect. While the Google app is in Testing, only listed test users can continue. In Google Cloud → APIs & Services → OAuth consent screen → Test users, add the same Gmail you use to connect, then try again. If you tapped Cancel, that also shows this message.",
+      );
+      return;
+    }
+    if (err === "redirect_uri_mismatch" || reason.includes("redirect_uri")) {
+      setGoogleHint(
+        `Google rejected the return address. In Google Cloud, add this exact Authorized redirect URI: ${redirect}. Also add ${origin} under Authorized JavaScript origins.`,
+      );
+      return;
+    }
+    if (reason.includes("refresh token")) {
+      setGoogleHint(
+        `Google connected but did not give Held a lasting calendar key. In Google Cloud turn on the Google Calendar API, add your Google account as a test user, then open Google Account → Security → Third-party access, remove Held, and connect again. Redirect URI: ${redirect}`,
+      );
       return;
     }
     setGoogleHint(
-      `Google could not finish connect. In Google Cloud, create a Web client, turn on the Google Calendar API, add your Google account as a test user, and add this exact Authorized redirect URI: ${redirect}`,
+      `Google could not finish connect${reason ? ` (${params.get("reason")})` : ""}. In Google Cloud: Web client, Google Calendar API on, your Gmail as a test user, Authorized JavaScript origin ${origin}, and this exact Authorized redirect URI: ${redirect}`,
     );
   }, []);
 
@@ -105,6 +126,15 @@ export function PayoutSettings({
       <p className="mx-auto mt-3 max-w-md text-sm text-dim lg:mx-0">
         Where you work sets the currency. Clients just pay. They never pick a gateway.
       </p>
+
+      {passwordCopy ? (
+        <>
+          <div className="mt-10 h-px w-full bg-line" />
+          <div className="mt-8">
+            <PasswordSettings copy={passwordCopy} />
+          </div>
+        </>
+      ) : null}
 
       {error ? (
         <p className="mt-6 rounded-xl border border-line bg-void-2 px-4 py-3 text-sm">
@@ -419,10 +449,32 @@ export function PayoutSettings({
             Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, then add this redirect URI in Google Cloud: the site address plus /api/google/callback
           </p>
         )}
-        {siteOrigin ? (
-          <p className="mt-3 text-xs text-dim">
-            Google Cloud Authorized redirect URI: {siteOrigin}/api/google/callback
+        {googleReady && !googleOn ? (
+          <p className="mt-3 text-sm text-dim">
+            While Google lists this app as Testing, only Gmail addresses added as Test users can connect. Add yours in Google Cloud → OAuth consent screen → Test users.
           </p>
+        ) : null}
+        {siteOrigin ? (
+          <div className="mt-3 space-y-2 text-xs text-dim">
+            <p>Authorized JavaScript origin: {siteOrigin}</p>
+            <p>Authorized redirect URI: {siteOrigin}/api/google/callback</p>
+            <button
+              type="button"
+              className="text-signal"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(
+                    `${siteOrigin}/api/google/callback`,
+                  );
+                  setCopiedUri(true);
+                } catch {
+                  setCopiedUri(false);
+                }
+              }}
+            >
+              {copiedUri ? "Redirect URI copied" : "Copy redirect URI"}
+            </button>
+          </div>
         ) : null}
       </div>
     </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
 import { CONTACT, SOCIAL } from "@/lib/constants";
 
@@ -27,7 +28,11 @@ export default function ContactPage() {
       </p>
       <h2 className="font-display text-2xl text-paper">If you run a Held page</h2>
       <p>
-        For a forgotten password, use Reset password on the log in page. For payout, calendar, or billing questions, start in Settings and Billing. Those screens hold the details that fix most account issues.
+        For a forgotten password, open{" "}
+        <Link href="/forgot-password" className="text-signal">
+          Reset password
+        </Link>
+        {" "}on the log in page. We email a reset link to the address on the account. For payout, calendar, or billing questions, start in Settings and Billing. Those screens hold the details that fix most account issues.
       </p>
       {CONTACT.email ? (
         <p>

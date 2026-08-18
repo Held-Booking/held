@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { completeOnboarding } from "@/app/auth/actions";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import type { Locale, Messages } from "@/lib/i18n";
@@ -20,7 +20,12 @@ export function OnboardingForm({
   const [name, setName] = useState(defaultName);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [host, setHost] = useState("held.app");
   const slug = useMemo(() => slugify(name) || "yourname", [name]);
+
+  useEffect(() => {
+    setHost(window.location.host);
+  }, []);
 
   return (
     <main className="relative min-h-dvh bg-void px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-[calc(4.75rem+env(safe-area-inset-top))]">
@@ -68,7 +73,7 @@ export function OnboardingForm({
           <input type="hidden" name="slug" value={slugify(name)} />
           <p className="rounded-xl border border-line bg-void-2 px-4 py-3 text-sm">
             <span className="text-dim">{copy?.yourLink ?? "Your link "}</span>
-            <span className="text-signal">held.app/{slug}</span>
+            <span className="text-signal">{host}/book/{slug}</span>
           </p>
           <button
             type="submit"

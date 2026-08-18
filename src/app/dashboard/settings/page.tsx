@@ -30,6 +30,7 @@ export default async function SettingsPage() {
       googleOnCopy={t.dash.googleOn}
       googleOffCopy={t.dash.googleOff}
       connectGoogle={t.dash.connectGoogle}
+      passwordCopy={t.auth}
     />
   );
 }

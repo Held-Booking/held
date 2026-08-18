@@ -79,7 +79,7 @@ function Shell({
   };
 }) {
   const nav = labels ?? {
-    today: "Today",
+    today: "Home",
     bookings: "Bookings",
     packages: "Packages",
     hours: "Hours",

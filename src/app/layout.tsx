@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { BRAND } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { AuthLinkCatch } from "@/components/auth/AuthLinkCatch";
 import { FaviconSpread } from "@/components/brand/FaviconSpread";
 import "./globals.css";
 
@@ -31,6 +32,20 @@ export const metadata: Metadata = {
     template: `%s · ${BRAND.name}`,
   },
   description: BRAND.description,
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: BRAND.name,
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -52,8 +67,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&family=Noto+Sans+SC:wght@400;700&display=swap"
         />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
       </head>
       <body className="flex min-h-dvh flex-col overflow-x-clip bg-void font-sans text-paper">
+        <AuthLinkCatch />
         <FaviconSpread />
         {children}
       </body>

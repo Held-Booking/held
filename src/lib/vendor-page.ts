@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { DEMO_NAME, DEMO_SLUG } from "@/lib/constants";
 import { PAYSTACK_COUNTRIES, paymentsReady } from "@/lib/gateways";
+import { planIsLive } from "@/lib/plan";
 import { formatDuration, upcomingOpenDays } from "@/lib/schedule";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import {
@@ -38,6 +39,7 @@ export type VendorPage = {
   isDemo: boolean;
   paymentsOn: boolean;
   bankReady: boolean;
+  planLive: boolean;
 };
 
 const DEMO_PACKAGES: VendorPagePackage[] = [
@@ -94,6 +96,7 @@ export function demoVendorPage(): VendorPage {
     isDemo: true,
     paymentsOn: false,
     bankReady: false,
+    planLive: true,
   };
 }
 
@@ -107,14 +110,23 @@ export const loadVendorPage = cache(async (slug: string): Promise<VendorPage | n
   const supabase = await createServerSupabase();
   let { data: profile } = await supabase
     .from("profiles")
-    .select("id, display_name, slug, timezone, country, currency, bio, logo_url")
+    .select("id, display_name, slug, timezone, country, currency, bio, logo_url, plan_expires_at")
     .eq("slug", slug)
     .maybeSingle();
 
   if (!profile?.slug) {
     const retry = await supabase
       .from("profiles")
-      .select("id, display_name, slug, timezone, country, currency, bio")
+      .select("id, display_name, slug, timezone, country, currency, bio, logo_url, plan_expires_at")
+      .eq("slug", slug)
+      .maybeSingle();
+    profile = retry.data as typeof profile;
+  }
+
+  if (!profile?.slug) {
+    const retry = await supabase
+      .from("profiles")
+      .select("id, display_name, slug, timezone, country, currency, bio, logo_url")
       .eq("slug", slug)
       .maybeSingle();
     profile = retry.data as typeof profile;
@@ -164,6 +176,9 @@ export const loadVendorPage = cache(async (slug: string): Promise<VendorPage | n
   const timezone = (profile.timezone as string) || "Africa/Lagos";
   const country = ((profile.country as string) || "NG").toUpperCase();
   const currency = (profile.currency as string) || "NGN";
+  const expiresAt = (profile as { plan_expires_at?: string | null }).plan_expires_at;
+  const planLive =
+    "plan_expires_at" in (profile as object) ? planIsLive(expiresAt) : true;
 
   let bankReady = !PAYSTACK_COUNTRIES.has(country);
   if (PAYSTACK_COUNTRIES.has(country) && isServiceRoleConfigured()) {
@@ -193,7 +208,8 @@ export const loadVendorPage = cache(async (slug: string): Promise<VendorPage | n
     country,
     isDemo: false,
     paymentsOn:
-      isServiceRoleConfigured() && paymentsReady(country) && bankReady,
+      isServiceRoleConfigured() && paymentsReady(country) && bankReady && planLive,
     bankReady,
+    planLive,
   };
 });

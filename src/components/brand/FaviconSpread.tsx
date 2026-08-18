@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { WEEK_CENTER, WEEK_DOTS, WEEK_SIDE, weekProgress } from "@/lib/week-mark";
 
-const SIZE = 64;
+const SIZE = 192;
 const CY = SIZE / 2;
 const CENTER = SIZE / 2;
 const SPREAD_MS = 2300;
@@ -12,6 +12,13 @@ const OPEN_MS = 700;
 function hex(color: string): [number, number, number] {
   const n = Number.parseInt(color.slice(1), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function isMobile() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches ||
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  );
 }
 
 function drawDot(
@@ -29,6 +36,7 @@ function drawDot(
 
 export function FaviconSpread() {
   useEffect(() => {
+    if (isMobile()) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const canvas = document.createElement("canvas");
     canvas.width = SIZE;
@@ -36,7 +44,9 @@ export function FaviconSpread() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    let link =
+      document.querySelector<HTMLLinkElement>('link[rel="icon"]:not([sizes="180x180"])') ||
+      document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (!link) {
       link = document.createElement("link");
       link.rel = "icon";
@@ -55,8 +65,7 @@ export function FaviconSpread() {
         const open = weekProgress(elapsed - SPREAD_MS, 80, OPEN_MS);
         const from = CENTER;
         const spreadX = dot.x * SIZE;
-        const openX = CENTER + (spreadX - CENTER) * 1.08;
-        const x = from + (spreadX - from) * spread + (openX - spreadX) * open;
+        const x = from + (spreadX - from) * Math.max(spread, open);
         const targetR = dot.r * SIZE;
         const r = targetR * (0.18 + 0.82 * Math.max(spread, dot.center ? 0.35 : 0));
         const alpha = dot.center ? 1 : Math.min(1, spread);
@@ -65,10 +74,7 @@ export function FaviconSpread() {
       link.href = canvas.toDataURL("image/png");
     }
 
-    if (reduce) {
-      paint(SPREAD_MS + OPEN_MS);
-      return;
-    }
+    if (reduce) return;
 
     function tick(now: number) {
       if (!start) start = now;

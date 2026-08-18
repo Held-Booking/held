@@ -56,5 +56,8 @@ export const config = {
     "/onboarding",
     "/login",
     "/signup",
+    "/auth/callback",
+    "/auth/reset",
+    "/auth/update-password",
   ],
 };

@@ -12,10 +12,12 @@ export function UpdatePasswordForm({
   lang = "en",
   nav,
   copy,
+  hasSession = true,
 }: {
   lang?: Locale;
   nav?: Messages["nav"];
   copy?: Messages["auth"];
+  hasSession?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -37,6 +39,12 @@ export function UpdatePasswordForm({
             {copy?.updateBody ?? "Use at least 8 characters."}
           </p>
 
+          {!hasSession ? (
+            <p className="mt-6 rounded-xl border border-line bg-void px-4 py-3 text-sm text-paper">
+              {copy?.noResetSession ?? "This reset link expired. Request a new one."}
+            </p>
+          ) : null}
+
           {done ? (
             <p className="mt-6 rounded-xl border border-signal/40 bg-signal/10 px-4 py-3 text-sm text-paper">
               {copy?.passwordUpdated ?? "Your password is saved. Log in with it."}
@@ -49,7 +57,7 @@ export function UpdatePasswordForm({
             </p>
           ) : null}
 
-          {!done ? (
+          {!done && hasSession ? (
             <form
               className="mt-6 space-y-4 text-start sm:mt-8"
               action={(formData) => {
@@ -83,12 +91,19 @@ export function UpdatePasswordForm({
                   : (copy?.savePassword ?? "Save new password")}
               </button>
             </form>
-          ) : (
+          ) : done ? (
             <Link
               href="/login"
               className="mt-5 block text-center text-sm text-signal"
             >
               {copy?.logIn ?? "Log in"}
+            </Link>
+          ) : (
+            <Link
+              href="/forgot-password"
+              className="mt-5 block text-center text-sm text-signal"
+            >
+              {copy?.requestNewLink ?? "Request a new reset link"}
             </Link>
           )}
         </div>

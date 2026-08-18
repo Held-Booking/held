@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { dbErrorMessage } from "@/lib/supabase/errors";
@@ -16,6 +17,9 @@ function authErrorMessage(message: string) {
   }
   if (text.includes("invalid login")) {
     return "Email or password is wrong.";
+  }
+  if (text.includes("session") || text.includes("not authenticated")) {
+    return "This reset link expired. Request a new one.";
   }
   if (text.includes("rate limit") || text.includes("email rate")) {
     return "Too many signup emails from this project. Wait about an hour, or log in with the account you already have.";
@@ -93,7 +97,7 @@ export async function requestPasswordReset(formData: FormData): Promise<AuthResu
   const supabase = await createServerSupabase();
   const origin = await appOrigin();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/callback?next=/auth/update-password`,
+    redirectTo: `${origin}/auth/reset`,
   });
 
   if (error) {
@@ -102,6 +106,14 @@ export async function requestPasswordReset(formData: FormData): Promise<AuthResu
       return { error: "Too many reset emails. Wait a bit, then try again." };
     }
   }
+
+  const jar = await cookies();
+  jar.set("held_password_reset", "1", {
+    httpOnly: false,
+    maxAge: 60 * 60,
+    path: "/",
+    sameSite: "lax",
+  });
 
   return { error: null, confirm: true };
 }
@@ -117,8 +129,18 @@ export async function updatePassword(formData: FormData): Promise<AuthResult> {
   }
 
   const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "This reset link expired. Request a new one." };
+  }
+
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { error: authErrorMessage(error.message) };
+
+  const stay = String(formData.get("stay") ?? "") === "1";
+  if (!stay) await supabase.auth.signOut();
   return { error: null, confirm: true };
 }
 
@@ -167,6 +189,8 @@ export async function completeOnboarding(formData: FormData) {
     country: "NG",
     currency: "NGN",
     timezone: "Africa/Lagos",
+    plan_status: "trialing",
+    plan_expires_at: new Date(Date.now() + 14 * 86_400_000).toISOString(),
     onboarded_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });

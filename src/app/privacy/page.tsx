@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Privacy" };
 export default function PrivacyPage() {
   return (
     <LegalPage kicker="legal" title="Privacy">
-      <p>Last updated 17 August 2026.</p>
+      <p>Last updated 18 August 2026.</p>
       <p>
         This notice explains what Held collects, why we collect it, who can see it, and how you can ask us to change or delete it. It applies to people who create a Held page and to people who book through one. Held is booking software. We are not a marketplace and we do not sell personal data.
       </p>
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
 
       <h2 className="font-display text-2xl text-paper">What we collect</h2>
       <p>
-        From professionals we store the name shown on the page, the public link, country, timezone, currency, hours, packages, optional intro and photo, WhatsApp number if provided, and payout bank details entered in Settings. Login is handled by Supabase Auth using the email and password you choose.
+        From professionals we store the name shown on the page, the public link, country, timezone, currency, hours, packages, optional intro and photo, WhatsApp number if provided, and payout bank details entered in Settings. Login is handled by Supabase Auth using the email and password you choose. A session cookie keeps you signed in on this device. If you connect Google Calendar, we store a refresh token so new bookings can be written to that calendar. You can disconnect Google in Settings. Password reset mail is sent through the email provider connected to Held’s login system.
       </p>
       <p>
         From clients we store name, email, phone or WhatsApp if provided, the package and time booked, deposit amount, and payment status. We do not store full card numbers. Paystack (or another processor named at checkout) handles the card or transfer.

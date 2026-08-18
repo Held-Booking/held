@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
 
   if (denied) {
     settings.searchParams.set("google", denied);
+    const reason = request.nextUrl.searchParams.get("error_description");
+    if (reason) settings.searchParams.set("reason", reason.slice(0, 180));
     return NextResponse.redirect(settings);
   }
   if (!code) {
@@ -39,8 +41,10 @@ export async function GET(request: NextRequest) {
         updated_at: new Date().toISOString(),
       })
       .eq("id", user.id);
-  } catch {
+  } catch (err) {
     settings.searchParams.set("google", "token");
+    const reason = err instanceof Error ? err.message : "";
+    if (reason) settings.searchParams.set("reason", reason.slice(0, 180));
     return NextResponse.redirect(settings);
   }
   return NextResponse.redirect(settings);
