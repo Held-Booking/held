@@ -3,32 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export async function proxy(request: NextRequest) {
-  const host = (
-    request.headers.get("x-forwarded-host") ||
-    request.headers.get("host") ||
-    ""
-  )
-    .split(",")[0]
-    .trim()
-    .split(":")[0];
-
-  if (host === "www.bookheld.app") {
-    const url = request.nextUrl.clone();
-    url.hostname = "bookheld.app";
-    url.protocol = "https:";
-    url.port = "";
-    return NextResponse.redirect(url, 308);
-  }
-
-  const path = request.nextUrl.pathname;
-  const gated = path.startsWith("/dashboard") || path.startsWith("/onboarding");
-  const authPath =
-    path === "/login" ||
-    path === "/signup" ||
-    path.startsWith("/auth/") ||
-    path.startsWith("/api/google");
-
-  if (!isSupabaseConfigured() || (!gated && !authPath)) {
+  if (!isSupabaseConfigured()) {
     return NextResponse.next();
   }
 
@@ -59,6 +34,9 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const path = request.nextUrl.pathname;
+  const gated = path.startsWith("/dashboard") || path.startsWith("/onboarding");
+
   if (!user && gated) {
     const login = new URL("/login", request.url);
     login.searchParams.set("next", path);
@@ -74,6 +52,13 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?)$).*)",
+    "/dashboard/:path*",
+    "/onboarding",
+    "/login",
+    "/signup",
+    "/auth/callback",
+    "/auth/reset",
+    "/auth/update-password",
+    "/api/google/:path*",
   ],
 };
