@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { googleConnectUrl } from "@/lib/google-calendar";
-import {
-  cookieDomainForApp,
-  publicAppUrl,
-  requestHost,
-  publicHost,
-} from "@/lib/origin";
+import { cookieDomainForApp, originFromRequest } from "@/lib/origin";
 import { isGoogleConfigured } from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
 
 const COOKIE = "held_google_connect";
 
 export async function GET(request: NextRequest) {
-  const origin = publicAppUrl();
-  if (requestHost(request) !== publicHost()) {
-    return NextResponse.redirect(new URL("/api/google/start", origin));
-  }
-
+  const origin = originFromRequest(request);
   const settings = new URL("/dashboard/settings", origin);
   if (!isGoogleConfigured()) {
     return NextResponse.redirect(settings);
@@ -30,7 +21,7 @@ export async function GET(request: NextRequest) {
     login.searchParams.set("next", "/dashboard/settings");
     return NextResponse.redirect(login);
   }
-  const url = googleConnectUrl(user.id);
+  const url = googleConnectUrl(user.id, origin);
   if (!url) {
     return NextResponse.redirect(settings);
   }

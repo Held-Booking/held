@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 export function originFromHeaders(h: Headers, fallback?: string) {
   const host = (h.get("x-forwarded-host") || h.get("host") || "")
     .split(",")[0]
-    .trim();
+    .trim()
+    .split(":")[0];
   if (!host) {
     return (
       fallback?.replace(/\/$/, "") ||
@@ -28,15 +29,10 @@ export function originFromRequest(request: {
 }
 
 export function publicAppUrl() {
-  const raw =
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://bookheld.app";
-  try {
-    const url = new URL(raw);
-    if (url.hostname === "www.bookheld.app") url.hostname = "bookheld.app";
-    return url.origin;
-  } catch {
-    return "https://bookheld.app";
-  }
+  return (
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
+    "https://www.bookheld.app"
+  );
 }
 
 export function publicHost() {

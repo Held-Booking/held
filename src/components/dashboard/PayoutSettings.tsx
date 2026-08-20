@@ -87,7 +87,7 @@ export function PayoutSettings({
     }
     if (err === "state") {
       setGoogleHint(
-        "Connect was interrupted. Open Settings on https://bookheld.app (not www, not a preview link) and tap Connect Google again.",
+        "Connect was interrupted. Open Settings on https://www.bookheld.app and tap Connect Google again.",
       );
       return;
     }
@@ -102,7 +102,7 @@ export function PayoutSettings({
       return;
     }
     setGoogleHint(
-      "Google could not finish connect. Try again from https://bookheld.app/dashboard/settings",
+      "Google could not finish connect. Try again from https://www.bookheld.app/dashboard/settings",
     );
   }, [googleRedirectUri]);
 

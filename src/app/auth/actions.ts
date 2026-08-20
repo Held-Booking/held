@@ -1,11 +1,17 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { sendMail } from "@/lib/mail";
+import { originFromHeaders } from "@/lib/origin";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+import {
+  isResendConfigured,
+  isServiceRoleConfigured,
+  isSupabaseConfigured,
+} from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { dbErrorMessage } from "@/lib/supabase/errors";
-import { publicAppUrl } from "@/lib/origin";
 import { isValidSlug, slugify } from "@/lib/slug";
 
 type AuthResult = { error: string | null; confirm?: boolean };
@@ -40,7 +46,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
   }
 
   const supabase = await createServerSupabase();
-  const origin = publicAppUrl();
+  const origin = originFromHeaders(await headers());
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -94,16 +100,51 @@ export async function requestPasswordReset(formData: FormData): Promise<AuthResu
     return { error: "Enter the email on your page." };
   }
 
-  const supabase = await createServerSupabase();
-  const origin = publicAppUrl();
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/auth/reset`,
-  });
+  const origin = originFromHeaders(await headers());
+  const redirectTo = `${origin}/auth/reset`;
+  let sent = false;
 
-  if (error) {
-    const text = error.message.toLowerCase();
-    if (text.includes("rate limit") || text.includes("email rate")) {
-      return { error: "Too many reset emails. Wait a bit, then try again." };
+  if (isResendConfigured() && isServiceRoleConfigured()) {
+    try {
+      const admin = createAdminSupabase();
+      const { data, error } = await admin.auth.admin.generateLink({
+        type: "recovery",
+        email,
+        options: { redirectTo },
+      });
+      const token = data?.properties?.hashed_token;
+      const link = token
+        ? `${origin}/auth/reset?token_hash=${encodeURIComponent(token)}&type=recovery`
+        : data?.properties?.action_link;
+      if (!error && link) {
+        await sendMail({
+          to: email,
+          subject: "Reset your Held password",
+          text: [
+            "Open this link to choose a new password. It expires soon.",
+            "",
+            link,
+            "",
+            "If you did not ask for this, ignore the message.",
+          ].join("\n"),
+        });
+        sent = true;
+      }
+    } catch {
+      sent = false;
+    }
+  }
+
+  if (!sent) {
+    const supabase = await createServerSupabase();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+    if (error) {
+      const text = error.message.toLowerCase();
+      if (text.includes("rate limit") || text.includes("email rate")) {
+        return { error: "Too many reset emails. Wait a bit, then try again." };
+      }
     }
   }
 

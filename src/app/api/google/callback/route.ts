@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exchangeGoogleCode } from "@/lib/google-calendar";
-import {
-  cookieDomainForApp,
-  publicAppUrl,
-  publicHost,
-  requestHost,
-} from "@/lib/origin";
+import { cookieDomainForApp, originFromRequest } from "@/lib/origin";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import { isServiceRoleConfigured } from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
@@ -13,13 +8,7 @@ import { createServerSupabase } from "@/lib/supabase/server";
 const COOKIE = "held_google_connect";
 
 export async function GET(request: NextRequest) {
-  const origin = publicAppUrl();
-  if (requestHost(request) !== publicHost()) {
-    const bounce = new URL("/api/google/callback", origin);
-    bounce.search = request.nextUrl.search;
-    return NextResponse.redirect(bounce);
-  }
-
+  const origin = originFromRequest(request);
   const denied = request.nextUrl.searchParams.get("error");
   const code = request.nextUrl.searchParams.get("code");
   const state = request.nextUrl.searchParams.get("state");
@@ -66,7 +55,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const refresh = await exchangeGoogleCode(code);
+    const refresh = await exchangeGoogleCode(code, origin);
     const db = isServiceRoleConfigured()
       ? createAdminSupabase()
       : supabase;

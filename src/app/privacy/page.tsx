@@ -23,7 +23,7 @@ export default function PrivacyPage() {
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">What we collect</h2>
       <p>
-        From professionals we store the name shown on the page, the public link, country, timezone, currency, hours, packages, optional intro and photo, WhatsApp number if provided, and payout bank details entered in Settings. Login is handled by Supabase Auth using the email and password you choose. A session cookie keeps you signed in on this device. If you connect Google Calendar, we store a refresh token so new bookings can be written to that calendar. You can disconnect Google in Settings. Password reset mail is sent through the email provider connected to Held’s login system.
+        From professionals we store the name shown on the page, the public link, country, timezone, currency, hours, packages, optional intro and photo, WhatsApp number if provided, and payout bank details entered in Settings. Login is handled by Supabase Auth using the email and password you choose. A session cookie keeps you signed in on this device. If you connect Google Calendar, we store a refresh token so new bookings can be written to that calendar. You can disconnect Google in Settings. Password reset mail is sent by Held through Resend.
       </p>
       <p>
         From clients we store name, email, phone or WhatsApp if provided, the package and time booked, deposit amount, and payment status. We do not store full card numbers. Paystack (or another processor named at checkout) handles the card or transfer.

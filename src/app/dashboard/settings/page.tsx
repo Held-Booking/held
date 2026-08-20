@@ -3,7 +3,8 @@ import { PayoutSettings } from "@/components/dashboard/PayoutSettings";
 import { dict } from "@/lib/i18n";
 import { googleRedirectUri } from "@/lib/google-calendar";
 import { getLang } from "@/lib/i18n/server";
-import { publicAppUrl } from "@/lib/origin";
+import { originFromHeaders } from "@/lib/origin";
+import { headers } from "next/headers";
 import { isGoogleConfigured } from "@/lib/supabase/config";
 import { requireVendor } from "@/lib/supabase/vendor";
 
@@ -13,6 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   const { user, profile } = await requireVendor();
   const t = dict(await getLang());
+  const origin = originFromHeaders(await headers());
   return (
     <PayoutSettings
       email={user.email ?? ""}
@@ -34,8 +36,8 @@ export default async function SettingsPage() {
       googleTitle={t.dash.google}
       googleOnCopy={t.dash.googleOn}
       googleOffCopy={t.dash.googleOff}
-      googleRedirectUri={googleRedirectUri()}
-      appUrl={publicAppUrl()}
+      googleRedirectUri={googleRedirectUri(origin)}
+      appUrl={origin}
       connectGoogle={t.dash.connectGoogle}
       passwordCopy={t.auth}
     />

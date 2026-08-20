@@ -15,15 +15,15 @@ function googleClientSecret() {
     .replace(/^["']|["']$/g, "");
 }
 
-export function googleRedirectUri() {
-  return `${publicAppUrl()}/api/google/callback`;
+export function googleRedirectUri(origin?: string) {
+  return `${(origin || publicAppUrl()).replace(/\/$/, "")}/api/google/callback`;
 }
 
-export function googleConnectUrl(state?: string) {
+export function googleConnectUrl(state?: string, origin?: string) {
   if (!isGoogleConfigured()) return null;
   const params = new URLSearchParams({
     client_id: googleClientId(),
-    redirect_uri: googleRedirectUri(),
+    redirect_uri: googleRedirectUri(origin),
     response_type: "code",
     scope: "https://www.googleapis.com/auth/calendar.events",
     access_type: "offline",
@@ -34,7 +34,7 @@ export function googleConnectUrl(state?: string) {
   return `${AUTH}?${params.toString()}`;
 }
 
-export async function exchangeGoogleCode(code: string) {
+export async function exchangeGoogleCode(code: string, origin?: string) {
   const res = await fetch(TOKEN, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -42,7 +42,7 @@ export async function exchangeGoogleCode(code: string) {
       code,
       client_id: googleClientId(),
       client_secret: googleClientSecret(),
-      redirect_uri: googleRedirectUri(),
+      redirect_uri: googleRedirectUri(origin),
       grant_type: "authorization_code",
     }),
   });

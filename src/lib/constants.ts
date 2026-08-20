@@ -18,7 +18,7 @@ export const CONTACT = {
   email: "hello@bookheld.app",
   whatsapp: "",
   legalName: "Held Software Limited",
-  address: "No. 10, Bolakale Street, Ilorin West, Ilorin, Kwara, Nigeria",
+  address: "Nigeria.",
 } as const;
 
 export const SOCIAL = {
