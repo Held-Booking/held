@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
-import { BRAND, PRICE } from "@/lib/constants";
+import { BRAND, CONTACT, PRICE } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { AuthLinkCatch } from "@/components/auth/AuthLinkCatch";
@@ -97,9 +97,21 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: BRAND.name,
+              url: "https://bookheld.app",
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web",
               description: BRAND.description,
+              email: CONTACT.email,
+              publisher: {
+                "@type": "Organization",
+                name: CONTACT.legalName,
+                email: CONTACT.email,
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: CONTACT.address,
+                  addressCountry: "NG",
+                },
+              },
               offers: {
                 "@type": "Offer",
                 price: String(PRICE.monthly),

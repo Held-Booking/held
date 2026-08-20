@@ -27,6 +27,41 @@ export function originFromRequest(request: {
   return originFromHeaders(request.headers, request.nextUrl?.origin);
 }
 
+export function publicAppUrl() {
+  const raw =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://bookheld.app";
+  try {
+    const url = new URL(raw);
+    if (url.hostname === "www.bookheld.app") url.hostname = "bookheld.app";
+    return url.origin;
+  } catch {
+    return "https://bookheld.app";
+  }
+}
+
+export function publicHost() {
+  try {
+    return new URL(publicAppUrl()).hostname;
+  } catch {
+    return "bookheld.app";
+  }
+}
+
+export function requestHost(request: { headers: Headers }) {
+  return (request.headers.get("x-forwarded-host") || request.headers.get("host") || "")
+    .split(",")[0]
+    .trim()
+    .split(":")[0];
+}
+
+export function cookieDomainForApp() {
+  const host = publicHost();
+  if (host === "bookheld.app" || host.endsWith(".bookheld.app")) {
+    return ".bookheld.app";
+  }
+  return undefined;
+}
+
 export async function appOrigin() {
   return originFromHeaders(await headers());
 }

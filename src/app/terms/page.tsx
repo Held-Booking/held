@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/marketing/LegalPage";
+import { CONTACT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Terms" };
 
 export default function TermsPage() {
   return (
     <LegalPage kicker="legal" title="Terms">
-      <p>Last updated 18 August 2026.</p>
+      <p>Last updated 20 August 2026.</p>
       <p>
-        These terms are the agreement between you and Held when you create a page, book a page, or otherwise use the service. Held is booking software. You get a public page. Clients pick a package, a time, and pay a deposit to hold it. Held is not a marketplace, not an employer, and not a party to the job between the professional and the client.
+        These terms are the agreement between you and {CONTACT.legalName} (“Held”) when you create a page, book a page, or otherwise use the service. Held is booking software. You get a public page. Clients pick a package, a time, and pay a deposit to hold it. Held is not a marketplace, not an employer, and not a party to the job between the professional and the client.
+      </p>
+      <p>
+        {CONTACT.legalName}, {CONTACT.address}.{" "}
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
+        .
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Who may use Held</h2>

@@ -26,6 +26,8 @@ export function PayoutSettings({
   googleTitle = "Google Calendar",
   googleOnCopy = "New bookings land on your Google Calendar.",
   googleOffCopy = "Connect Google to put bookings on your calendar.",
+  googleRedirectUri = "https://bookheld.app/api/google/callback",
+  appUrl = "https://bookheld.app",
   connectGoogle = "Connect Google",
   passwordCopy,
 }: {
@@ -43,6 +45,8 @@ export function PayoutSettings({
   googleTitle?: string;
   googleOnCopy?: string;
   googleOffCopy?: string;
+  googleRedirectUri?: string;
+  appUrl?: string;
   connectGoogle?: string;
   passwordCopy?: Messages["auth"];
   email: string;
@@ -58,16 +62,17 @@ export function PayoutSettings({
   const [banksError, setBanksError] = useState<string | null>(null);
   const [verifiedName, setVerifiedName] = useState(accountName);
   const [googleHint, setGoogleHint] = useState<string | null>(null);
-  const [siteOrigin, setSiteOrigin] = useState("");
 
   useEffect(() => {
-    const origin = window.location.origin;
-    setSiteOrigin(origin);
     const params = new URLSearchParams(window.location.search);
     const err = params.get("google");
-    const reason = (params.get("reason") ?? "").toLowerCase();
+    const reasonRaw = params.get("reason") ?? "";
+    const reason = reasonRaw.toLowerCase();
     if (!err) return;
-    const redirect = `${origin}/api/google/callback`;
+    if (err === "ok") {
+      setGoogleHint("Google Calendar is connected. New bookings will land on it.");
+      return;
+    }
     if (err === "access_denied") {
       setGoogleHint(
         "Google blocked connect. Add this Gmail as a test user in Google Cloud, or try again if you tapped Cancel.",
@@ -76,7 +81,13 @@ export function PayoutSettings({
     }
     if (err === "redirect_uri_mismatch" || reason.includes("redirect_uri")) {
       setGoogleHint(
-        `Google rejected the return address. In Google Cloud, add this exact Authorized redirect URI: ${redirect}`,
+        `Google rejected the return address. In Google Cloud → Credentials → your Web client, Authorized redirect URI must be exactly: ${googleRedirectUri}`,
+      );
+      return;
+    }
+    if (err === "state") {
+      setGoogleHint(
+        "Connect was interrupted. Open Settings on https://bookheld.app (not www, not a preview link) and tap Connect Google again.",
       );
       return;
     }
@@ -86,8 +97,14 @@ export function PayoutSettings({
       );
       return;
     }
-    setGoogleHint("Google could not finish connect. Try again in a moment.");
-  }, []);
+    if (err === "token" && reasonRaw) {
+      setGoogleHint(`Google could not finish connect: ${reasonRaw}`);
+      return;
+    }
+    setGoogleHint(
+      "Google could not finish connect. Try again from https://bookheld.app/dashboard/settings",
+    );
+  }, [googleRedirectUri]);
 
   useEffect(() => {
     if (!paystackCountry) return;
@@ -171,7 +188,7 @@ export function PayoutSettings({
           <p className="rounded-xl border border-line bg-void-2 px-4 py-3 text-sm">
             <span className="text-dim">Your link </span>
             <span className="text-signal">
-              {siteOrigin ? `${siteOrigin.replace(/^https?:\/\//, "")}/book/${slug}` : `/book/${slug}`}
+              {`${appUrl.replace(/^https?:\/\//, "")}/book/${slug}`}
             </span>
           </p>
         ) : null}

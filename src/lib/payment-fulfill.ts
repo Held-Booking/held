@@ -17,7 +17,7 @@ async function syncGoogleEvent(admin: Admin, bookingId: string) {
 
   const { data: profile } = await admin
     .from("profiles")
-    .select("display_name, google_refresh_token, google_calendar_id")
+    .select("display_name, google_refresh_token, google_calendar_id, timezone")
     .eq("id", booking.vendor_id)
     .maybeSingle();
   if (!profile?.google_refresh_token) return;
@@ -34,6 +34,7 @@ async function syncGoogleEvent(admin: Admin, bookingId: string) {
     title: `${pack?.name ?? "Booking"} · ${booking.customer_name ?? "Client"}`,
     start: booking.starts_at as string,
     end: booking.ends_at as string,
+    timeZone: (profile.timezone as string) || "Africa/Lagos",
     description: booking.customer_email
       ? `Booked on Held. ${booking.customer_email}`
       : "Booked on Held.",
@@ -117,8 +118,8 @@ export async function fulfillPayment(input: {
   if (payError) return { ok: false as const, error: payError.message };
   try {
     await syncGoogleEvent(admin, input.bookingId);
-  } catch {
-    // Calendar is extra. The deposit already landed.
+  } catch (err) {
+    console.error("Google Calendar sync failed", err);
   }
   try {
     await notifyBooking(input.bookingId);

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
+import { CONTACT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Security" };
 
@@ -13,7 +14,7 @@ export default function SecurityPage() {
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Payments</h2>
       <p>
-        Cards and transfers go through the processor named at checkout. Today that is Paystack in Nigeria, Ghana, Kenya, South Africa, and Côte d’Ivoire. More countries are opening. Held never sees the full card.
+        Cards and transfers go through the processor named at checkout. Africa uses Paystack. US card deposits use Stripe, which is next. Held never sees the full card.
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Accounts</h2>
@@ -33,11 +34,26 @@ export default function SecurityPage() {
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Delete an account</h2>
       <p>
-        Write from the email on that account. The full notice is on{" "}
+        Write from the email on that account to{" "}
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
+        . The full notice is on{" "}
         <Link href="/privacy" className="text-signal">
           Privacy
         </Link>
         .
+      </p>
+
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held</h2>
+      <p>
+        {CONTACT.legalName}
+        <br />
+        {CONTACT.address}
+        <br />
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
       </p>
     </LegalPage>
   );

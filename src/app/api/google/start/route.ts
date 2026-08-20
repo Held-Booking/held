@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { googleConnectUrl } from "@/lib/google-calendar";
-import { originFromRequest } from "@/lib/origin";
+import {
+  cookieDomainForApp,
+  publicAppUrl,
+  requestHost,
+  publicHost,
+} from "@/lib/origin";
 import { isGoogleConfigured } from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
 
+const COOKIE = "held_google_connect";
+
 export async function GET(request: NextRequest) {
-  const origin = originFromRequest(request);
+  const origin = publicAppUrl();
+  if (requestHost(request) !== publicHost()) {
+    return NextResponse.redirect(new URL("/api/google/start", origin));
+  }
+
   const settings = new URL("/dashboard/settings", origin);
   if (!isGoogleConfigured()) {
     return NextResponse.redirect(settings);
@@ -15,11 +26,23 @@ export async function GET(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.redirect(new URL("/login", origin));
+    const login = new URL("/login", origin);
+    login.searchParams.set("next", "/dashboard/settings");
+    return NextResponse.redirect(login);
   }
-  const url = googleConnectUrl(origin, user.id);
+  const url = googleConnectUrl(user.id);
   if (!url) {
     return NextResponse.redirect(settings);
   }
-  return NextResponse.redirect(url);
+  const res = NextResponse.redirect(url);
+  const domain = cookieDomainForApp();
+  res.cookies.set(COOKIE, user.id, {
+    httpOnly: true,
+    secure: origin.startsWith("https"),
+    sameSite: "lax",
+    path: "/",
+    maxAge: 10 * 60,
+    ...(domain ? { domain } : {}),
+  });
+  return res;
 }

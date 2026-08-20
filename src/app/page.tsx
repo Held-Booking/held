@@ -28,7 +28,7 @@ export default async function Home() {
 
         <section className="relative z-10 px-4 py-14 text-center sm:px-6 sm:py-16 lg:px-10 lg:py-20 lg:text-start">
           <Reveal className="mx-auto max-w-3xl">
-            <h2 className="text-[clamp(1.7rem,4.6vw,2.75rem)] font-semibold tracking-tight leading-[1.2]">
+            <h2 className="text-[clamp(1.7rem,4.6vw,2.75rem)] font-semibold uppercase tracking-tight leading-[1.2]">
               {t.home.chatNotBooking}
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-dim sm:text-lg lg:mx-0">

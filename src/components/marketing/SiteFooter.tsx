@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BRAND, SOCIAL } from "@/lib/constants";
+import { BRAND, CONTACT, SOCIAL } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
 
 const SOCIAL_ITEMS = [
@@ -44,6 +44,14 @@ export function SiteFooter({
             <span className="text-signal">.</span>
           </Link>
           <p className="mt-1 text-sm text-dim">{labels.line}</p>
+          <p className="mt-3 text-sm text-dim">{CONTACT.legalName}</p>
+          <p className="mt-1 text-sm text-dim">{CONTACT.address}</p>
+          <a
+            href={`mailto:${CONTACT.email}`}
+            className="mt-1 inline-block text-sm text-signal"
+          >
+            {CONTACT.email}
+          </a>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-dim">
           {links.map((item) => (

@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/marketing/LegalPage";
+import { CONTACT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Privacy" };
 
 export default function PrivacyPage() {
   return (
     <LegalPage kicker="legal" title="Privacy">
-      <p>Last updated 18 August 2026.</p>
+      <p>Last updated 20 August 2026.</p>
       <p>
-        This notice explains what Held collects, why we collect it, who can see it, and how you can ask us to change or delete it. It applies to people who create a Held page and to people who book through one. Held is booking software. We are not a marketplace and we do not sell personal data.
+        This notice explains what Held collects, why we collect it, who can see it, and how you can ask us to change or delete it. It applies to people who create a Held page and to people who book through one. Held is booking software. We are not a marketplace and we do not sell personal data. The controller is {CONTACT.legalName}, {CONTACT.address}. Write to{" "}
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
+        .
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Who this covers</h2>

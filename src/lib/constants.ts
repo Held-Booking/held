@@ -15,8 +15,10 @@ export const DEMO_NAME = "Kade";
 export const DEMO_TIMEZONE = "Africa/Lagos";
 
 export const CONTACT = {
-  email: "",
+  email: "hello@bookheld.app",
   whatsapp: "",
+  legalName: "Held Software Limited",
+  address: "No. 10, Bolakale Street, Ilorin West, Ilorin, Kwara, Nigeria",
 } as const;
 
 export const SOCIAL = {

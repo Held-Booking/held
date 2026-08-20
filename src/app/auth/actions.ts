@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { dbErrorMessage } from "@/lib/supabase/errors";
-import { appOrigin } from "@/lib/origin";
+import { publicAppUrl } from "@/lib/origin";
 import { isValidSlug, slugify } from "@/lib/slug";
 
 type AuthResult = { error: string | null; confirm?: boolean };
@@ -40,7 +40,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
   }
 
   const supabase = await createServerSupabase();
-  const origin = await appOrigin();
+  const origin = publicAppUrl();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -95,7 +95,7 @@ export async function requestPasswordReset(formData: FormData): Promise<AuthResu
   }
 
   const supabase = await createServerSupabase();
-  const origin = await appOrigin();
+  const origin = publicAppUrl();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${origin}/auth/reset`,
   });

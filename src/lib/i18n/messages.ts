@@ -25,7 +25,7 @@ const en = {
     sub: "Clients book your time on one page. A deposit holds the date.",
     getPage: "Get your page",
     seeBooking: "See a booking",
-    chatNotBooking: "A reply in chat is not a booking.",
+    chatNotBooking: "A REPLY IN CHAT IS NOT A BOOKING.",
     ifTheyBook: "If they book your time, this is for you.",
     step1: "Share one link",
     step1d: "Your page, hours, and packages live at one address.",
@@ -47,7 +47,7 @@ const en = {
       "The client pays a deposit to you through the processor for your country. Held takes none of the job. $12 a month is Held’s fee, billed in USD, separate from the deposit.",
     whereTitle: "Where you can start",
     whereBody:
-      "Deposits are live in Nigeria, Ghana, Kenya, South Africa, and Côte d’Ivoire. More countries are opening. You can set up your page now.",
+      "Open a page from Africa or the US. Client deposits use the processor for your country.",
     faqTitle: "Questions",
     faq1q: "Is a chat a booking?",
     faq1a: "No. A booking is held when the deposit is paid.",
@@ -55,9 +55,9 @@ const en = {
     faq2a: "No. $12 a month or $99 a year. That is Held. The deposit is theirs.",
     faq3q: "What happens after the 14 days?",
     faq3a: "The dashboard stays open. New deposits pause until Held is paid.",
-    faq4q: "Where can I take deposits?",
+    faq4q: "Does Held work in Africa and the US?",
     faq4a:
-      "Deposits are live in Nigeria, Ghana, Kenya, South Africa, and Côte d’Ivoire. More countries are opening. You can set up your page from anywhere.",
+      "Yes. Open a page from either. Africa takes deposits on Paystack today. US card deposits use Stripe, which is next.",
     faq5q: "Can I try it first?",
     faq5a: "Open the demo. It cannot take a real deposit. Your own page can, after a bank is on file.",
   },
@@ -72,7 +72,7 @@ const en = {
     seeBooking: "See a booking",
     fees: "Held’s $12 is billed in USD. Client deposits use the professional’s currency. Card and transfer fees belong to the processor, not Held.",
     where:
-      "Deposits are live in Nigeria, Ghana, Kenya, South Africa, and Côte d’Ivoire. More countries are opening. You can set up your page now.",
+      "Open a page from Africa or the US. Client deposits use the processor for your country. Africa is on Paystack. US cards use Stripe, which is next.",
   },
   book: {
     choose: "Choose a package",
@@ -240,7 +240,7 @@ const fr: typeof en = {
       "Le client verse un acompte au professionnel via le processeur de ce pays. Held ne prend rien sur le travail. Les 12 $ sont l’abonnement Held, en USD, séparé de l’acompte.",
     whereTitle: "Par où commencer",
     whereBody:
-      "Les acomptes sont en ligne au Nigeria, Ghana, Kenya, Afrique du Sud et Côte d’Ivoire. D’autres pays arrivent. Vous pouvez créer votre page maintenant.",
+      "Ouvrez une page depuis l’Afrique ou les États-Unis. Les acomptes clients passent par le processeur de votre pays.",
     faqTitle: "Questions",
     faq1q: "Un message est-il une réservation ?",
     faq1a: "Non. La date est retenue quand l’acompte est payé.",
@@ -248,9 +248,9 @@ const fr: typeof en = {
     faq2a: "Non. 12 $ par mois ou 99 $ par an. C’est Held. L’acompte est à eux.",
     faq3q: "Après les 14 jours ?",
     faq3a: "Le tableau de bord reste ouvert. Les nouveaux acomptes s’arrêtent jusqu’au paiement de Held.",
-    faq4q: "Où puis-je prendre des acomptes ?",
+    faq4q: "Held marche-t-il en Afrique et aux États-Unis ?",
     faq4a:
-      "Les acomptes sont en ligne au Nigeria, Ghana, Kenya, Afrique du Sud et Côte d’Ivoire. D’autres pays arrivent. Vous pouvez créer votre page depuis n’importe où.",
+      "Oui. Créez une page des deux côtés. L’Afrique encaisse via Paystack aujourd’hui. Les cartes US passent par Stripe, ce branchement vient ensuite.",
     faq5q: "Puis-je essayer ?",
     faq5a: "Ouvrez la démo. Elle ne prend pas d’acompte réel. Votre page le peut, une banque enregistrée.",
   },
@@ -265,7 +265,7 @@ const fr: typeof en = {
     seeBooking: "Voir une réservation",
     fees: "Les 12 $ de Held sont en USD. Les acomptes clients sont dans la devise du professionnel. Les frais carte et virement sont ceux du processeur.",
     where:
-      "Les acomptes sont en ligne au Nigeria, Ghana, Kenya, Afrique du Sud et Côte d’Ivoire. D’autres pays arrivent. Vous pouvez créer votre page maintenant.",
+      "Ouvrez une page depuis l’Afrique ou les États-Unis. L’Afrique encaisse via Paystack. Les cartes US passent par Stripe, ce branchement vient ensuite.",
   },
   book: {
     choose: "Choisissez un forfait",
@@ -433,7 +433,7 @@ const es: typeof en = {
       "El cliente paga un depósito al profesional por el procesador de ese país. Held no toma nada del trabajo. Los 12 $ son la cuota de Held, en USD, aparte del depósito.",
     whereTitle: "Por dónde empezar",
     whereBody:
-      "Los depósitos están en vivo en Nigeria, Ghana, Kenia, Sudáfrica y Côte d’Ivoire. Más países se abren. Puedes crear tu página ahora.",
+      "Abre una página desde África o EE. UU. Los depósitos del cliente usan el procesador de tu país.",
     faqTitle: "Preguntas",
     faq1q: "¿Un chat es una reserva?",
     faq1a: "No. La fecha se retiene cuando se paga el depósito.",
@@ -441,9 +441,9 @@ const es: typeof en = {
     faq2a: "No. 12 $ al mes o 99 $ al año. Eso es Held. El depósito es suyo.",
     faq3q: "¿Qué pasa a los 14 días?",
     faq3a: "El panel sigue abierto. Los depósitos nuevos se pausan hasta pagar Held.",
-    faq4q: "¿Dónde puedo cobrar depósitos?",
+    faq4q: "¿Held funciona en África y en EE. UU.?",
     faq4a:
-      "Los depósitos están en vivo en Nigeria, Ghana, Kenia, Sudáfrica y Côte d’Ivoire. Más países se abren. Puedes crear tu página desde cualquier lugar.",
+      "Sí. Abre una página en cualquiera. África cobra con Paystack hoy. Las tarjetas de EE. UU. usan Stripe; eso es lo siguiente.",
     faq5q: "¿Puedo probarlo?",
     faq5a: "Abre la demo. No cobra un depósito real. Tu página sí, con un banco registrado.",
   },
@@ -458,7 +458,7 @@ const es: typeof en = {
     seeBooking: "Ver una reserva",
     fees: "Los 12 $ de Held se cobran en USD. Los depósitos del cliente usan la moneda del profesional. Las comisiones de tarjeta o transferencia son del procesador.",
     where:
-      "Los depósitos están en vivo en Nigeria, Ghana, Kenia, Sudáfrica y Côte d’Ivoire. Más países se abren. Puedes crear tu página ahora.",
+      "Abre una página desde África o EE. UU. África cobra con Paystack. Las tarjetas de EE. UU. usan Stripe; eso es lo siguiente.",
   },
   book: {
     choose: "Elige un paquete",
@@ -626,7 +626,7 @@ const pt: typeof en = {
       "O cliente paga um depósito ao profissional pelo processador desse país. A Held não fica com nada do trabalho. Os 12 $ são a taxa da Held, em USD, à parte do depósito.",
     whereTitle: "Onde começar",
     whereBody:
-      "Os depósitos estão ativos na Nigéria, Gana, Quénia, África do Sul e Côte d’Ivoire. Mais países estão a abrir. Pode criar a sua página agora.",
+      "Abra uma página em África ou nos EUA. Os depósitos do cliente usam o processador do seu país.",
     faqTitle: "Perguntas",
     faq1q: "Uma conversa é uma reserva?",
     faq1a: "Não. A data fica presa quando o depósito é pago.",
@@ -634,9 +634,9 @@ const pt: typeof en = {
     faq2a: "Não. 12 $ por mês ou 99 $ por ano. Isso é a Held. O depósito é deles.",
     faq3q: "E depois dos 14 dias?",
     faq3a: "O painel continua aberto. Novos depósitos pausam até pagar a Held.",
-    faq4q: "Onde posso receber depósitos?",
+    faq4q: "A Held funciona em África e nos EUA?",
     faq4a:
-      "Os depósitos estão ativos na Nigéria, Gana, Quénia, África do Sul e Côte d’Ivoire. Mais países estão a abrir. Pode criar a sua página em qualquer lugar.",
+      "Sim. Abra uma página em qualquer lado. África recebe depósitos no Paystack hoje. Cartões dos EUA usam Stripe; isso vem a seguir.",
     faq5q: "Posso experimentar?",
     faq5a: "Abra a demo. Não cobra um depósito real. A sua página cobra, com um banco na ficha.",
   },
@@ -651,7 +651,7 @@ const pt: typeof en = {
     seeBooking: "Ver uma reserva",
     fees: "Os 12 $ da Held são cobrados em USD. Os depósitos do cliente usam a moeda do profissional. As taxas de cartão ou transferência são do processador.",
     where:
-      "Os depósitos estão ativos na Nigéria, Gana, Quénia, África do Sul e Côte d’Ivoire. Mais países estão a abrir. Pode criar a sua página agora.",
+      "Abra uma página em África ou nos EUA. África usa Paystack. Cartões dos EUA usam Stripe; isso vem a seguir.",
   },
   book: {
     choose: "Escolha um pacote",
@@ -819,7 +819,7 @@ const de: typeof en = {
       "Der Kunde zahlt eine Anzahlung an den Profi über den Zahlungsanbieter des Landes. Held nimmt nichts vom Auftrag. Die 12 $ sind Helds Gebühr in USD, getrennt von der Anzahlung.",
     whereTitle: "Wo Sie starten können",
     whereBody:
-      "Anzahlungen laufen in Nigeria, Ghana, Kenia, Südafrika und Côte d’Ivoire. Weitere Länder folgen. Sie können Ihre Seite jetzt einrichten.",
+      "Legen Sie eine Seite in Afrika oder den USA an. Kundeneinzahlungen laufen über den Anbieter Ihres Landes.",
     faqTitle: "Fragen",
     faq1q: "Ist ein Chat eine Buchung?",
     faq1a: "Nein. Das Datum ist gehalten, wenn die Anzahlung bezahlt ist.",
@@ -827,9 +827,9 @@ const de: typeof en = {
     faq2a: "Nein. 12 $ im Monat oder 99 $ im Jahr. Das ist Held. Die Anzahlung gehört ihnen.",
     faq3q: "Was passiert nach 14 Tagen?",
     faq3a: "Das Konto bleibt offen. Neue Anzahlungen pausieren, bis Held bezahlt ist.",
-    faq4q: "Wo kann ich Anzahlungen nehmen?",
+    faq4q: "Funktioniert Held in Afrika und den USA?",
     faq4a:
-      "Anzahlungen laufen in Nigeria, Ghana, Kenia, Südafrika und Côte d’Ivoire. Weitere Länder folgen. Sie können Ihre Seite von überall einrichten.",
+      "Ja. Legen Sie überall eine Seite an. Afrika nimmt Anzahlungen über Paystack. US-Karten laufen über Stripe; das kommt als Nächstes.",
     faq5q: "Kann ich es erst testen?",
     faq5a: "Öffnen Sie die Demo. Sie nimmt keine echte Anzahlung. Ihre Seite schon, mit hinterlegter Bank.",
   },
@@ -844,7 +844,7 @@ const de: typeof en = {
     seeBooking: "Buchung ansehen",
     fees: "Helds 12 $ werden in USD abgerechnet. Kundeneinzahlungen laufen in der Währung des Profis. Karten- und Überweisungsgebühren gehören dem Anbieter.",
     where:
-      "Anzahlungen laufen in Nigeria, Ghana, Kenia, Südafrika und Côte d’Ivoire. Weitere Länder folgen. Sie können Ihre Seite jetzt einrichten.",
+      "Legen Sie eine Seite in Afrika oder den USA an. Afrika nutzt Paystack. US-Karten laufen über Stripe; das kommt als Nächstes.",
   },
   book: {
     choose: "Paket wählen",
@@ -1012,7 +1012,7 @@ const ar: typeof en = {
       "العميل يدفع عربونا للمهني عبر معالج ذلك البلد. Held لا يأخذ من العمل. اثنا عشر دولارا رسم Held بالدولار، منفصل عن العربون.",
     whereTitle: "من أين تبدأ",
     whereBody:
-      "العربون يعمل في نيجيريا وغانا وكينيا وجنوب أفريقيا وكوت ديفوار. دول أخرى قادمة. يمكنك إنشاء صفحتك الآن.",
+      "افتح صفحة من أفريقيا أو أمريكا. عربون العميل يمر عبر معالج بلدك.",
     faqTitle: "أسئلة",
     faq1q: "هل الرسالة حجز؟",
     faq1a: "لا. الموعد يُثبت عند دفع العربون.",
@@ -1020,9 +1020,9 @@ const ar: typeof en = {
     faq2a: "لا. 12 دولارا شهريا أو 99 سنويا. هذا Held. العربون لهم.",
     faq3q: "ماذا بعد 14 يوما؟",
     faq3a: "لوحة التحكم تبقى مفتوحة. العربون الجديد يتوقف حتى دفع Held.",
-    faq4q: "أين يمكنني أخذ عربون؟",
+    faq4q: "هل Held يعمل في أفريقيا وأمريكا؟",
     faq4a:
-      "العربون يعمل في نيجيريا وغانا وكينيا وجنوب أفريقيا وكوت ديفوار. دول أخرى قادمة. يمكنك إنشاء صفحتك من أي مكان.",
+      "نعم. افتح صفحة من أي مكان. أفريقيا تقبض عبر Paystack اليوم. بطاقات أمريكا عبر Stripe، وهذا التالي.",
     faq5q: "هل أجرب أولا؟",
     faq5a: "افتح العرض. لا يأخذ عربونا حقيقيا. صفحتك تأخذ بعد حفظ بنك.",
   },
@@ -1037,7 +1037,7 @@ const ar: typeof en = {
     seeBooking: "شاهد حجزا",
     fees: "رسوم Held البالغة 12 دولارا تُحصّل بالدولار. عربون العميل بعملة المهني. رسوم البطاقة والتحويل للمعالج.",
     where:
-      "العربون يعمل في نيجيريا وغانا وكينيا وجنوب أفريقيا وكوت ديفوار. دول أخرى قادمة. يمكنك إنشاء صفحتك الآن.",
+      "افتح صفحة من أفريقيا أو أمريكا. أفريقيا عبر Paystack. بطاقات أمريكا عبر Stripe، وهذا التالي.",
   },
   book: {
     choose: "اختر باقة",
@@ -1205,7 +1205,7 @@ const zh: typeof en = {
       "客户通过该国的支付通道向专业人士付定金。Held 不抽成。12 美元是 Held 的订阅费，以美元收取，与定金分开。",
     whereTitle: "从哪里开始",
     whereBody:
-      "定金已在尼日利亚、加纳、肯尼亚、南非和科特迪瓦上线。更多国家即将开放。你现在就可以建页。",
+      "可以从非洲或美国建页。客户定金走你所在国家的支付通道。",
     faqTitle: "问题",
     faq1q: "聊天算预约吗？",
     faq1a: "不算。付了定金，档期才锁定。",
@@ -1213,9 +1213,9 @@ const zh: typeof en = {
     faq2a: "不抽。每月 12 美元或每年 99 美元。那是 Held。定金归他们。",
     faq3q: "14 天之后呢？",
     faq3a: "后台仍可打开。新定金会暂停，直到续订 Held。",
-    faq4q: "哪里能收定金？",
+    faq4q: "Held 在非洲和美国都能用吗？",
     faq4a:
-      "定金已在尼日利亚、加纳、肯尼亚、南非和科特迪瓦上线。更多国家即将开放。你可以从任何地方建页。",
+      "能。两边都可以建页。非洲今天用 Paystack 收定金。美国银行卡走 Stripe，下一步就会接通。",
     faq5q: "能先试用吗？",
     faq5a: "打开演示。它不能收真定金。你自己的页面可以，前提是已保存银行。",
   },
@@ -1230,7 +1230,7 @@ const zh: typeof en = {
     seeBooking: "查看预约",
     fees: "Held 的 12 美元按美元计费。客户定金使用专业人士的币种。卡费和转账费归支付通道。",
     where:
-      "定金已在尼日利亚、加纳、肯尼亚、南非和科特迪瓦上线。更多国家即将开放。你现在就可以建页。",
+      "可以从非洲或美国建页。非洲用 Paystack。美国银行卡走 Stripe，下一步就会接通。",
   },
   book: {
     choose: "选择套餐",

@@ -27,7 +27,11 @@ export function isResendConfigured() {
 }
 
 export function isGoogleConfigured() {
-  return Boolean(
-    process.env.GOOGLE_CLIENT_ID?.trim() && process.env.GOOGLE_CLIENT_SECRET?.trim(),
-  );
+  const id = (process.env.GOOGLE_CLIENT_ID ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+  const secret = (process.env.GOOGLE_CLIENT_SECRET ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+  return Boolean(id && secret);
 }

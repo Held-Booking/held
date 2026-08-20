@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
         title: `${pack?.name ?? "Booking"} with ${profile.display_name ?? "Held"}`,
         start: startsAt.toISOString(),
         end: endsAt.toISOString(),
+        timeZone: timezone,
       });
       if (eventId) {
         await admin.from("bookings").update({ google_event_id: eventId }).eq("id", booking.id);

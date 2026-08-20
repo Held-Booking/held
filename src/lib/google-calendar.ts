@@ -1,18 +1,29 @@
 import { isGoogleConfigured } from "@/lib/supabase/config";
+import { publicAppUrl } from "@/lib/origin";
 
 const AUTH = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN = "https://oauth2.googleapis.com/token";
 const CAL = "https://www.googleapis.com/calendar/v3";
 
-export function googleRedirectUri(origin: string) {
-  return `${origin.replace(/\/$/, "")}/api/google/callback`;
+function googleClientId() {
+  return (process.env.GOOGLE_CLIENT_ID ?? "").trim().replace(/^["']|["']$/g, "");
 }
 
-export function googleConnectUrl(origin: string, state?: string) {
+function googleClientSecret() {
+  return (process.env.GOOGLE_CLIENT_SECRET ?? "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+}
+
+export function googleRedirectUri() {
+  return `${publicAppUrl()}/api/google/callback`;
+}
+
+export function googleConnectUrl(state?: string) {
   if (!isGoogleConfigured()) return null;
   const params = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
-    redirect_uri: googleRedirectUri(origin),
+    client_id: googleClientId(),
+    redirect_uri: googleRedirectUri(),
     response_type: "code",
     scope: "https://www.googleapis.com/auth/calendar.events",
     access_type: "offline",
@@ -23,15 +34,15 @@ export function googleConnectUrl(origin: string, state?: string) {
   return `${AUTH}?${params.toString()}`;
 }
 
-export async function exchangeGoogleCode(origin: string, code: string) {
+export async function exchangeGoogleCode(code: string) {
   const res = await fetch(TOKEN, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       code,
-      client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!.trim(),
-      redirect_uri: googleRedirectUri(origin),
+      client_id: googleClientId(),
+      client_secret: googleClientSecret(),
+      redirect_uri: googleRedirectUri(),
       grant_type: "authorization_code",
     }),
   });
@@ -55,14 +66,29 @@ async function accessToken(refreshToken: string) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       refresh_token: refreshToken,
-      client_id: process.env.GOOGLE_CLIENT_ID!.trim(),
-      client_secret: process.env.GOOGLE_CLIENT_SECRET!.trim(),
+      client_id: googleClientId(),
+      client_secret: googleClientSecret(),
       grant_type: "refresh_token",
     }),
   });
-  const json = (await res.json()) as { access_token?: string };
-  if (!json.access_token) throw new Error("Google access token failed.");
+  const json = (await res.json()) as {
+    access_token?: string;
+    error?: string;
+    error_description?: string;
+  };
+  if (!json.access_token) {
+    throw new Error(
+      json.error_description ?? json.error ?? "Google access token failed.",
+    );
+  }
   return json.access_token;
+}
+
+function googleErrorMessage(json: unknown, status: number) {
+  const err = (json as { error?: { message?: string } | string }).error;
+  if (typeof err === "string" && err) return err;
+  if (err && typeof err === "object" && err.message) return err.message;
+  return `Google Calendar ${status}`;
 }
 
 export async function upsertGoogleEvent(input: {
@@ -72,16 +98,18 @@ export async function upsertGoogleEvent(input: {
   title: string;
   start: string;
   end: string;
+  timeZone?: string | null;
   description?: string;
 }) {
   if (!isGoogleConfigured()) return null;
   const token = await accessToken(input.refreshToken);
   const calendarId = encodeURIComponent(input.calendarId || "primary");
+  const timeZone = input.timeZone || "UTC";
   const body = {
     summary: input.title,
     description: input.description ?? "",
-    start: { dateTime: input.start },
-    end: { dateTime: input.end },
+    start: { dateTime: input.start, timeZone },
+    end: { dateTime: input.end, timeZone },
   };
   const url = input.eventId
     ? `${CAL}/calendars/${calendarId}/events/${encodeURIComponent(input.eventId)}`
@@ -95,6 +123,12 @@ export async function upsertGoogleEvent(input: {
     body: JSON.stringify(body),
   });
   const json = (await res.json()) as { id?: string };
+  if (!res.ok) {
+    if (input.eventId && (res.status === 404 || res.status === 410)) {
+      return upsertGoogleEvent({ ...input, eventId: null });
+    }
+    throw new Error(googleErrorMessage(json, res.status));
+  }
   return json.id ?? input.eventId ?? null;
 }
 
@@ -106,8 +140,11 @@ export async function deleteGoogleEvent(input: {
   if (!isGoogleConfigured()) return;
   const token = await accessToken(input.refreshToken);
   const calendarId = encodeURIComponent(input.calendarId || "primary");
-  await fetch(
+  const res = await fetch(
     `${CAL}/calendars/${calendarId}/events/${encodeURIComponent(input.eventId)}`,
     { method: "DELETE", headers: { Authorization: `Bearer ${token}` } },
   );
+  if (!res.ok && res.status !== 404 && res.status !== 410) {
+    throw new Error(`Google Calendar delete ${res.status}`);
+  }
 }

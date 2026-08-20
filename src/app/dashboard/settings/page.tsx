@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { PayoutSettings } from "@/components/dashboard/PayoutSettings";
 import { dict } from "@/lib/i18n";
+import { googleRedirectUri } from "@/lib/google-calendar";
 import { getLang } from "@/lib/i18n/server";
+import { publicAppUrl } from "@/lib/origin";
 import { isGoogleConfigured } from "@/lib/supabase/config";
 import { requireVendor } from "@/lib/supabase/vendor";
 
@@ -32,6 +34,8 @@ export default async function SettingsPage() {
       googleTitle={t.dash.google}
       googleOnCopy={t.dash.googleOn}
       googleOffCopy={t.dash.googleOff}
+      googleRedirectUri={googleRedirectUri()}
+      appUrl={publicAppUrl()}
       connectGoogle={t.dash.connectGoogle}
       passwordCopy={t.auth}
     />

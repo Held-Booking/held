@@ -22,6 +22,19 @@ export default function ContactPage() {
       <p>
         Held is booking software. Who you write to depends on what you need.
       </p>
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held</h2>
+      <p>
+        {CONTACT.legalName}
+        <br />
+        {CONTACT.address}
+      </p>
+      <p>
+        Product questions:{" "}
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
+        . Use the email on your Held account so we can find the right page. Do not send client card numbers.
+      </p>
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">If you booked someone</h2>
       <p>
         Write to the professional you booked. Use the WhatsApp link on their page or the message that came after you paid. Held is not a party to that job and cannot change their hours, prices, or work.
@@ -34,28 +47,6 @@ export default function ContactPage() {
         </Link>
         {" "}on the log in page. We email a reset link to the address on the account. For payout, calendar, or billing questions, start in Settings and Billing.
       </p>
-      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held</h2>
-      {CONTACT.email ? (
-        <p>
-          Product questions:{" "}
-          <a href={`mailto:${CONTACT.email}`} className="text-signal">
-            {CONTACT.email}
-          </a>
-          . Use the email on your Held account so we can find the right page.
-        </p>
-      ) : (
-        <p>
-          There is no public Held inbox on this page yet. A support address will appear here when the Held domain is live. Use Settings if you run a page. Do not send client card numbers.
-        </p>
-      )}
-      {CONTACT.whatsapp ? (
-        <p>
-          WhatsApp:{" "}
-          <a href={CONTACT.whatsapp} className="text-signal">
-            Message Held
-          </a>
-        </p>
-      ) : null}
       {socials.length > 0 ? (
         <>
           <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held on social</h2>

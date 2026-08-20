@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
+import { CONTACT } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Help" };
 
@@ -53,7 +54,11 @@ export default function HelpPage() {
         <Link href="/contact" className="text-signal">
           Contact
         </Link>
-        . Use the email on your Held account if you run a page.
+        {" "}or write to{" "}
+        <a href={`mailto:${CONTACT.email}`} className="text-signal">
+          {CONTACT.email}
+        </a>
+        . {CONTACT.legalName}, {CONTACT.address}. Use the email on your Held account if you run a page.
       </p>
     </LegalPage>
   );
