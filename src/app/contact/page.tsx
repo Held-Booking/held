@@ -22,18 +22,19 @@ export default function ContactPage() {
       <p>
         Held is booking software. Who you write to depends on what you need.
       </p>
-      <h2 className="font-display text-2xl text-paper">If you booked someone</h2>
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">If you booked someone</h2>
       <p>
         Write to the professional you booked. Use the WhatsApp link on their page or the message that came after you paid. Held is not a party to that job and cannot change their hours, prices, or work.
       </p>
-      <h2 className="font-display text-2xl text-paper">If you run a Held page</h2>
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">If you run a Held page</h2>
       <p>
         For a forgotten password, open{" "}
         <Link href="/forgot-password" className="text-signal">
           Reset password
         </Link>
-        {" "}on the log in page. We email a reset link to the address on the account. For payout, calendar, or billing questions, start in Settings and Billing. Those screens hold the details that fix most account issues.
+        {" "}on the log in page. We email a reset link to the address on the account. For payout, calendar, or billing questions, start in Settings and Billing.
       </p>
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held</h2>
       {CONTACT.email ? (
         <p>
           Product questions:{" "}
@@ -44,7 +45,7 @@ export default function ContactPage() {
         </p>
       ) : (
         <p>
-          Until a public support inbox is listed here, use the email on your Held account from the log in page if you cannot reach Settings. Do not send client card numbers.
+          There is no public Held inbox on this page yet. A support address will appear here when the Held domain is live. Use Settings if you run a page. Do not send client card numbers.
         </p>
       )}
       {CONTACT.whatsapp ? (
@@ -57,7 +58,7 @@ export default function ContactPage() {
       ) : null}
       {socials.length > 0 ? (
         <>
-          <h2 className="font-display text-2xl text-paper">Held on social</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Held on social</h2>
           <p>
             These are public profiles, not a booking inbox. For a booking, contact the professional. For your own page, use the account tools above.
           </p>

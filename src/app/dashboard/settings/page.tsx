@@ -9,10 +9,13 @@ export const metadata: Metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const { profile } = await requireVendor();
+  const { user, profile } = await requireVendor();
   const t = dict(await getLang());
   return (
     <PayoutSettings
+      email={user.email ?? ""}
+      displayName={(profile.display_name as string) || ""}
+      slug={(profile.slug as string) || ""}
       country={(profile.country as string) || "NG"}
       currency={(profile.currency as string) || "NGN"}
       bio={(profile.bio as string) || ""}

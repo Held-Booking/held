@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookBar } from "@/components/booking/BookBar";
 import { PayRestButton } from "@/components/booking/PayRestButton";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
-import { googleCalendarUrl } from "@/lib/calendar";
+import { googleCalendarUrl, icsHref } from "@/lib/calendar";
 import { DEMO_SLUG } from "@/lib/constants";
 import { dict, fill } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
@@ -95,6 +95,7 @@ export default async function BookSuccessPage({
 
   let chatUrl: string | null = null;
   let calendarUrl: string | null = null;
+  let calendarFile: string | null = null;
   let manageUrl: string | null = null;
   let receipt: {
     vendor: string;
@@ -148,12 +149,14 @@ export default async function BookSuccessPage({
           token,
         };
         if (token) manageUrl = `/book/${slug}/manage/${token}`;
-        calendarUrl = googleCalendarUrl({
+        const cal = {
           title: `${receipt.packageName} with ${receipt.vendor}`,
           start: new Date(booking.starts_at as string),
           end: new Date(booking.ends_at as string),
           details: `Deposit ${receipt.deposit}${receipt.rest ? `. ${receipt.rest} due at the booking.` : ""}`,
-        });
+        };
+        calendarUrl = googleCalendarUrl(cal);
+        calendarFile = icsHref(cal);
         chatUrl = whatsappUrl(
           studio?.whatsapp as string | null,
           `Hi ${studio?.display_name || "there"}, I just booked ${receipt.packageName} for ${when}.`,
@@ -220,6 +223,15 @@ export default async function BookSuccessPage({
             className="flex min-h-12 items-center justify-center rounded-full border border-line px-6 text-sm hover:border-signal hover:text-signal"
           >
             {t.success.calendar}
+          </a>
+        ) : null}
+        {calendarFile ? (
+          <a
+            href={calendarFile}
+            download="held.ics"
+            className="flex min-h-12 items-center justify-center rounded-full border border-line px-6 text-sm hover:border-signal hover:text-signal"
+          >
+            {t.success.calendarFile}
           </a>
         ) : null}
         {manageUrl ? (

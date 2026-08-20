@@ -15,10 +15,20 @@ export function SiteFooter({
   labels,
 }: {
   lang?: Locale;
-  labels: { pricing: string; terms: string; privacy: string; contact: string };
+  labels: {
+    pricing: string;
+    terms: string;
+    privacy: string;
+    contact: string;
+    help: string;
+    security: string;
+    line: string;
+  };
 }) {
   const links = [
     { href: "/pricing", label: labels.pricing },
+    { href: "/help", label: labels.help },
+    { href: "/security", label: labels.security },
     { href: "/contact", label: labels.contact },
     { href: "/terms", label: labels.terms },
     { href: "/privacy", label: labels.privacy },
@@ -33,7 +43,7 @@ export function SiteFooter({
             {BRAND.name}
             <span className="text-signal">.</span>
           </Link>
-          <p className="mt-1 text-sm text-dim">{BRAND.tagline}</p>
+          <p className="mt-1 text-sm text-dim">{labels.line}</p>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-dim">
           {links.map((item) => (

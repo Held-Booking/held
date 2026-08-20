@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { BookBar } from "@/components/booking/BookBar";
 import { SiteHeader } from "@/components/marketing/SiteHeader";
 import { depositAmount } from "@/lib/money";
+import { phoneLooksValid } from "@/lib/phone";
 import type { TimeSlot } from "@/lib/slots";
+import { PAYSTACK_COUNTRIES } from "@/lib/gateways";
 import type { Locale, Messages } from "@/lib/i18n";
 import { fill } from "@/lib/i18n";
 import type { VendorPage } from "@/lib/vendor-page";
@@ -48,7 +50,7 @@ export function BookingSurface({
       slot &&
       name.trim().length >= 2 &&
       email.includes("@") &&
-      phone.replace(/\D/g, "").length >= 10 &&
+      phoneLooksValid(phone) &&
       page.paymentsOn,
   );
 
@@ -133,7 +135,7 @@ export function BookingSurface({
           {page.photo ? (
             <img
               src={page.photo}
-              alt=""
+              alt={page.name}
               className="h-24 w-24 rounded-[1.75rem] object-cover shadow-[0_16px_40px_-20px_rgba(126,180,255,0.55)] sm:h-28 sm:w-28"
             />
           ) : (
@@ -233,6 +235,9 @@ export function BookingSurface({
             03
           </p>
           <p className="mt-2 text-base font-medium">{copy.pickTime}</p>
+          <p className="mt-1 text-xs text-dim">
+            {fill(copy.timesIn, { zone: page.timezone })}
+          </p>
           {slotsLoading ? (
             <p className="mt-4 rounded-2xl border border-dashed border-line px-4 py-6 text-sm text-dim">
               {copy.loading}
@@ -317,7 +322,7 @@ export function BookingSurface({
                     />
                   </label>
                   <label className="block text-sm text-dim">
-                    {copy.whatsapp}
+                    {copy.phone}
                     <input
                       type="tel"
                       value={phone}
@@ -360,7 +365,11 @@ export function BookingSurface({
             bottom: "max(0.75rem, env(safe-area-inset-bottom))",
           }}
         >
-          <p className="mb-2 text-center text-xs text-dim">{copy.methods}</p>
+          <p className="mb-2 text-center text-xs text-dim">
+            {PAYSTACK_COUNTRIES.has(page.country)
+              ? copy.methods
+              : copy.methodsCard}
+          </p>
           <button
             type="button"
             onClick={pay}

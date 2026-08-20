@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEMO_SLUG } from "@/lib/constants";
 import { listVendorSlots } from "@/lib/availability";
-import { PAYSTACK_COUNTRIES, resolveProvider } from "@/lib/gateways";
-import { whatsappDigits } from "@/lib/whatsapp";
+import { resolveProvider } from "@/lib/gateways";
+import { phoneLooksValid } from "@/lib/phone";
 import { depositCents } from "@/lib/money";
 import { initializePaystack } from "@/lib/paystack";
 import { timeToMinutes } from "@/lib/schedule";
@@ -78,6 +78,9 @@ export async function POST(request: NextRequest) {
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ error: "Add a real email." }, { status: 400 });
   }
+  if (!phoneLooksValid(phone)) {
+    return NextResponse.json({ error: "Add a real phone number." }, { status: 400 });
+  }
 
   const admin = createAdminSupabase();
   let { data: profile, error: profileError } = await admin
@@ -113,19 +116,11 @@ export async function POST(request: NextRequest) {
   }
 
   const country = ((profile.country as string) || "NG").toUpperCase();
-  if (whatsappDigits(phone, country).length < 10) {
-    return NextResponse.json({ error: "Add a WhatsApp number." }, { status: 400 });
-  }
   const currency = ((profile.currency as string) || "NGN").toUpperCase();
   const provider = resolveProvider(country);
   if (!provider) {
-    const needsPaystack = PAYSTACK_COUNTRIES.has(country);
     return NextResponse.json(
-      {
-        error: needsPaystack
-          ? "This page is in a Paystack country. Add PAYSTACK_SECRET_KEY and restart the app."
-          : "This page is not taking deposits yet.",
-      },
+      { error: "This page cannot take a deposit right now." },
       { status: 503 },
     );
   }

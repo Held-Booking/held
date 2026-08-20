@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
-import { BRAND } from "@/lib/constants";
+import { BRAND, PRICE } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { AuthLinkCatch } from "@/components/auth/AuthLinkCatch";
@@ -10,7 +10,7 @@ import "./globals.css";
 const sans = Plus_Jakarta_Sans({
   variable: "--font-sans-en",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const display = Syne({
@@ -33,6 +33,16 @@ export const metadata: Metadata = {
   },
   description: BRAND.description,
   manifest: "/manifest.webmanifest",
+  openGraph: {
+    title: `${BRAND.name} · ${BRAND.tagline}`,
+    description: BRAND.description,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND.name} · ${BRAND.tagline}`,
+    description: BRAND.description,
+  },
   appleWebApp: {
     capable: true,
     title: BRAND.name,
@@ -74,9 +84,35 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
       </head>
       <body className="flex min-h-dvh flex-col overflow-x-clip bg-void font-sans text-paper">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-paper focus:px-4 focus:py-2 focus:text-void"
+        >
+          Skip to content
+        </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: BRAND.name,
+              applicationCategory: "BusinessApplication",
+              operatingSystem: "Web",
+              description: BRAND.description,
+              offers: {
+                "@type": "Offer",
+                price: String(PRICE.monthly),
+                priceCurrency: "USD",
+              },
+            }),
+          }}
+        />
         <AuthLinkCatch />
         <FaviconSpread />
-        {children}
+        <div id="main" className="flex min-h-dvh flex-1 flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

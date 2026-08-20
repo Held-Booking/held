@@ -41,6 +41,8 @@ export default async function PricingPage() {
           <p className="mt-5 text-sm text-dim sm:mt-6">
             {fill(t.pricing.orYear, { price: formatMoney(PRICE.yearly) })}
           </p>
+          <p className="mt-4 text-sm leading-relaxed text-dim">{t.pricing.fees}</p>
+          <p className="mt-2 text-sm leading-relaxed text-dim">{t.pricing.where}</p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:mt-8 lg:flex-row lg:items-center">
             <ButtonLink href="/signup" className="w-full sm:w-auto">
               {t.pricing.start}

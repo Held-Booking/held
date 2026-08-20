@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { DEMO_NAME, DEMO_SLUG } from "@/lib/constants";
+import { DEMO_NAME, DEMO_SLUG, DEMO_TIMEZONE } from "@/lib/constants";
 import { PAYSTACK_COUNTRIES, paymentsReady } from "@/lib/gateways";
 import { planIsLive } from "@/lib/plan";
 import { formatDuration, upcomingOpenDays } from "@/lib/schedule";
@@ -80,13 +80,14 @@ export const DEMO_HOURS = [
   { weekday: 0, startMin: 8 * 60, endMin: 18 * 60 },
 ] as const;
 
-export const DEMO_TIMEZONE = "Africa/Lagos";
+export { DEMO_TIMEZONE };
 
 export function demoVendorPage(): VendorPage {
   return {
     slug: DEMO_SLUG,
     name: DEMO_NAME,
-    blurb: "Pick a package. Pay a deposit. The date is yours.",
+    blurb:
+      "Weekend tutoring in Lagos. Pick a slot. Pay a deposit. The date is yours.",
     photo: null,
     packages: DEMO_PACKAGES,
     days: upcomingOpenDays([6, 0], 14, new Date(), DEMO_TIMEZONE),

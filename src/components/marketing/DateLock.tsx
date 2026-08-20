@@ -2,18 +2,35 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { DEMO_NAME, DEMO_SLUG } from "@/lib/constants";
+import { DEMO_NAME, DEMO_SLUG, DEMO_TIMEZONE } from "@/lib/constants";
 import { depositAmount } from "@/lib/money";
+import { upcomingOpenDays } from "@/lib/schedule";
+import { instantFromZoned } from "@/lib/timezone";
 import { cn, formatMoney } from "@/lib/utils";
 
-const SLOTS = [
-  { id: "22", dow: "SAT", day: "22", mon: "AUG", service: "Session", price: 1800 },
-  { id: "23", dow: "SUN", day: "23", mon: "AUG", service: "Consult", price: 950 },
-  { id: "29", dow: "SAT", day: "29", mon: "AUG", service: "Visit", price: 620 },
-  { id: "30", dow: "SUN", day: "30", mon: "AUG", service: "Session", price: 1800 },
-  { id: "05", dow: "SAT", day: "05", mon: "SEP", service: "Consult", price: 950 },
-  { id: "06", dow: "SUN", day: "06", mon: "SEP", service: "Session", price: 1800 },
-];
+const PACKS = [
+  { service: "Session", price: 1800 },
+  { service: "Consult", price: 950 },
+  { service: "Visit", price: 620 },
+] as const;
+
+function lockSlots() {
+  const days = upcomingOpenDays([6, 0], 6, new Date(), DEMO_TIMEZONE);
+  return days.map((day, i) => {
+    const noon = instantFromZoned(day.id, 12 * 60, DEMO_TIMEZONE);
+    return {
+      id: day.id,
+      dow: noon
+        .toLocaleDateString("en-US", { timeZone: DEMO_TIMEZONE, weekday: "short" })
+        .toUpperCase(),
+      day: noon.toLocaleDateString("en-US", { timeZone: DEMO_TIMEZONE, day: "2-digit" }),
+      mon: noon
+        .toLocaleDateString("en-US", { timeZone: DEMO_TIMEZONE, month: "short" })
+        .toUpperCase(),
+      ...PACKS[i % PACKS.length],
+    };
+  });
+}
 
 export function DateLock({
   openLabel = "Open",
@@ -26,11 +43,13 @@ export function DateLock({
   dueLabel?: string;
   hint?: string;
 }) {
-  const [held, setHeld] = useState("22");
+  const slots = useMemo(() => lockSlots(), []);
+  const [held, setHeld] = useState(slots[0]?.id ?? "");
   const slot = useMemo(
-    () => SLOTS.find((s) => s.id === held) ?? SLOTS[0],
-    [held],
+    () => slots.find((s) => s.id === held) ?? slots[0],
+    [held, slots],
   );
+  if (!slot) return null;
   const deposit = depositAmount(slot.price, 30);
 
   return (
@@ -62,7 +81,7 @@ export function DateLock({
         </div>
 
         <div className="grid grid-cols-3 gap-2 p-3 sm:p-4">
-          {SLOTS.map((s) => {
+          {slots.map((s) => {
             const active = s.id === held;
             return (
               <button

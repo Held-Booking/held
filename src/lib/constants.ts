@@ -12,6 +12,7 @@ export const PRICE = {
 
 export const DEMO_SLUG = "kade";
 export const DEMO_NAME = "Kade";
+export const DEMO_TIMEZONE = "Africa/Lagos";
 
 export const CONTACT = {
   email: "",

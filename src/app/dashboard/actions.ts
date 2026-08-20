@@ -211,6 +211,26 @@ export async function saveWhatsapp(formData: FormData) {
   return { error: null };
 }
 
+export async function saveDisplayName(formData: FormData) {
+  const { supabase, user, profile } = await requireVendor();
+  const displayName = String(formData.get("displayName") ?? "").trim();
+  if (displayName.length < 2) return { error: "Give the page a name." };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      display_name: displayName,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  if (error) return { error: dbErrorMessage(error.message) };
+  refresh(profile.slug);
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard");
+  return { error: null };
+}
+
 export async function saveBio(formData: FormData) {
   const { supabase, user, profile } = await requireVendor();
   const bio = String(formData.get("bio") ?? "").trim();

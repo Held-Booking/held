@@ -71,6 +71,7 @@ export default async function DashboardHomePage() {
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
   const pageUrl = `${origin}/book/${profile.slug}`;
   const shareUrl = `https://wa.me/?text=${encodeURIComponent(`Book with ${profile.display_name}: ${pageUrl}`)}`;
+  const emailShare = `mailto:?subject=${encodeURIComponent(`Book with ${profile.display_name}`)}&body=${encodeURIComponent(pageUrl)}`;
 
   const nextService = nextBooking?.services as
     | { name?: string }
@@ -130,6 +131,12 @@ export default async function DashboardHomePage() {
           className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-line px-5 text-sm sm:w-auto"
         >
           {t.dash.share}
+        </a>
+        <a
+          href={emailShare}
+          className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-line px-5 text-sm sm:w-auto"
+        >
+          {t.dash.shareEmail}
         </a>
         <Link
           href={`/book/${profile.slug}`}
@@ -194,10 +201,23 @@ export default async function DashboardHomePage() {
       ) : null}
 
       <div className="mt-10 h-px w-full bg-line" />
-      <p className="mt-8 font-display text-5xl text-paper/15 sm:text-7xl">
-        {String(todayCount ?? 0).padStart(2, "0")}
-      </p>
-      <p className="mt-2 text-sm text-dim">{t.dash.bookingsToday}</p>
+      {(todayCount ?? 0) > 0 ? (
+        <>
+          <p className="mt-8 font-display text-5xl text-paper/15 sm:text-7xl">
+            {String(todayCount).padStart(2, "0")}
+          </p>
+          <p className="mt-2 text-sm text-dim">{t.dash.bookingsToday}</p>
+        </>
+      ) : (
+        <>
+          {ready && live ? (
+            <p className="mt-8 text-base text-paper">{t.dash.pageLive}</p>
+          ) : null}
+          <p className={`text-sm text-dim ${ready && live ? "mt-2" : "mt-8"}`}>
+            {t.dash.noBookings}
+          </p>
+        </>
+      )}
     </div>
   );
 }

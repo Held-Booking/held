@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { disconnectGoogle, resolveBank, saveBank, saveBio, savePhoto, savePayout, saveWhatsapp } from "@/app/dashboard/actions";
+import { disconnectGoogle, resolveBank, saveBank, saveBio, saveDisplayName, savePhoto, savePayout, saveWhatsapp } from "@/app/dashboard/actions";
 import { COUNTRIES, PAYSTACK_COUNTRIES } from "@/lib/gateways";
 import { PasswordSettings } from "@/components/dashboard/PasswordSettings";
 import type { Messages } from "@/lib/i18n";
@@ -9,6 +9,9 @@ import type { Messages } from "@/lib/i18n";
 type Bank = { name: string; code: string };
 
 export function PayoutSettings({
+  email,
+  displayName,
+  slug,
   country,
   currency,
   bio,
@@ -42,6 +45,9 @@ export function PayoutSettings({
   googleOffCopy?: string;
   connectGoogle?: string;
   passwordCopy?: Messages["auth"];
+  email: string;
+  displayName: string;
+  slug: string;
 }) {
   const paystackCountry = PAYSTACK_COUNTRIES.has(country.toUpperCase());
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +59,6 @@ export function PayoutSettings({
   const [verifiedName, setVerifiedName] = useState(accountName);
   const [googleHint, setGoogleHint] = useState<string | null>(null);
   const [siteOrigin, setSiteOrigin] = useState("");
-  const [copiedUri, setCopiedUri] = useState(false);
 
   useEffect(() => {
     const origin = window.location.origin;
@@ -65,25 +70,23 @@ export function PayoutSettings({
     const redirect = `${origin}/api/google/callback`;
     if (err === "access_denied") {
       setGoogleHint(
-        "Google blocked connect. While the Google app is in Testing, only listed test users can continue. In Google Cloud → APIs & Services → OAuth consent screen → Test users, add the same Gmail you use to connect, then try again. If you tapped Cancel, that also shows this message.",
+        "Google blocked connect. Add this Gmail as a test user in Google Cloud, or try again if you tapped Cancel.",
       );
       return;
     }
     if (err === "redirect_uri_mismatch" || reason.includes("redirect_uri")) {
       setGoogleHint(
-        `Google rejected the return address. In Google Cloud, add this exact Authorized redirect URI: ${redirect}. Also add ${origin} under Authorized JavaScript origins.`,
+        `Google rejected the return address. In Google Cloud, add this exact Authorized redirect URI: ${redirect}`,
       );
       return;
     }
     if (reason.includes("refresh token")) {
       setGoogleHint(
-        `Google connected but did not give Held a lasting calendar key. In Google Cloud turn on the Google Calendar API, add your Google account as a test user, then open Google Account → Security → Third-party access, remove Held, and connect again. Redirect URI: ${redirect}`,
+        "Google connected but did not keep access. Turn on the Google Calendar API, add your Gmail as a test user, remove Held from Google Account → Security → Third-party access, then connect again.",
       );
       return;
     }
-    setGoogleHint(
-      `Google could not finish connect${reason ? ` (${params.get("reason")})` : ""}. In Google Cloud: Web client, Google Calendar API on, your Gmail as a test user, Authorized JavaScript origin ${origin}, and this exact Authorized redirect URI: ${redirect}`,
-    );
+    setGoogleHint("Google could not finish connect. Try again in a moment.");
   }, []);
 
   useEffect(() => {
@@ -124,12 +127,67 @@ export function PayoutSettings({
       </p>
       <h1 className="mt-3 font-display text-3xl sm:text-4xl">Settings</h1>
       <p className="mx-auto mt-3 max-w-md text-sm text-dim lg:mx-0">
-        Where you work sets the currency. Clients just pay. They never pick a gateway.
+        Account, page, payout, and calendar. Clients never pick a gateway.
       </p>
+
+      <form
+        className="mt-8 space-y-4"
+        action={(formData) => {
+          setError(null);
+          setSaved(false);
+          startTransition(async () => {
+            const result = await saveDisplayName(formData);
+            if (result?.error) setError(result.error);
+            else setSaved(true);
+          });
+        }}
+      >
+        <h2 className="text-center text-xl font-semibold tracking-tight lg:text-start lg:text-2xl">
+          Account
+        </h2>
+        <p className="text-sm text-dim">
+          Login email cannot be changed here. The name is what clients see.
+        </p>
+        <label className="block text-sm text-dim">
+          Email
+          <input
+            type="email"
+            value={email}
+            readOnly
+            className="mt-2 min-h-12 w-full rounded-xl border border-line bg-void-2 px-4 text-base text-paper"
+          />
+        </label>
+        <label className="block text-sm text-dim">
+          Page name
+          <input
+            name="displayName"
+            defaultValue={displayName}
+            required
+            minLength={2}
+            className="mt-2 min-h-12 w-full rounded-xl border border-line bg-void px-4 text-base text-paper"
+          />
+        </label>
+        {slug ? (
+          <p className="rounded-xl border border-line bg-void-2 px-4 py-3 text-sm">
+            <span className="text-dim">Your link </span>
+            <span className="text-signal">
+              {siteOrigin ? `${siteOrigin.replace(/^https?:\/\//, "")}/book/${slug}` : `/book/${slug}`}
+            </span>
+          </p>
+        ) : null}
+        <button
+          type="submit"
+          disabled={pending}
+          className="min-h-12 w-full rounded-full bg-paper text-sm font-medium text-void disabled:opacity-40"
+        >
+          {pending ? "Saving..." : "Save name"}
+        </button>
+      </form>
+
+      <div className="mt-10 h-px w-full bg-line" />
 
       {passwordCopy ? (
         <>
-          <div className="mt-10 h-px w-full bg-line" />
           <div className="mt-8">
             <PasswordSettings copy={passwordCopy} />
           </div>
@@ -174,7 +232,7 @@ export function PayoutSettings({
           </select>
         </label>
         <p className="text-sm text-dim">
-          Nigeria uses Paystack. United States, United Kingdom, and Canada use Stripe later. You do not need a Stripe account if you work in Nigeria.
+          Deposits are live in Nigeria, Ghana, Kenya, South Africa, and Côte d’Ivoire. More countries are opening. You can set your country now.
         </p>
         <button
           type="submit"
@@ -242,7 +300,7 @@ export function PayoutSettings({
           One face or mark on the booking page. JPG, PNG, or WebP. Under 1.5 MB.
         </p>
         {photo ? (
-          <img src={photo} alt="" className="mx-auto h-20 w-20 rounded-2xl object-cover lg:mx-0" />
+          <img src={photo} alt={displayName} className="mx-auto h-20 w-20 rounded-2xl object-cover lg:mx-0" />
         ) : null}
         <input
           name="photo"
@@ -399,7 +457,7 @@ export function PayoutSettings({
         <div className="mt-8">
           <h2 className="text-center font-display text-xl lg:text-start lg:text-2xl">Payout bank</h2>
           <p className="mt-3 text-sm text-dim">
-            Payouts for this country come next. Nigeria uses Paystack today.
+            Bank payouts for this country are next. You can finish the rest of your page now.
           </p>
         </div>
       )}
@@ -445,37 +503,8 @@ export function PayoutSettings({
             </a>
           )
         ) : (
-          <p className="mt-3 text-sm text-dim">
-            Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, then add this redirect URI in Google Cloud: the site address plus /api/google/callback
-          </p>
+          <p className="mt-3 text-sm text-dim">Calendar connect is not on yet.</p>
         )}
-        {googleReady && !googleOn ? (
-          <p className="mt-3 text-sm text-dim">
-            While Google lists this app as Testing, only Gmail addresses added as Test users can connect. Add yours in Google Cloud → OAuth consent screen → Test users.
-          </p>
-        ) : null}
-        {siteOrigin ? (
-          <div className="mt-3 space-y-2 text-xs text-dim">
-            <p>Authorized JavaScript origin: {siteOrigin}</p>
-            <p>Authorized redirect URI: {siteOrigin}/api/google/callback</p>
-            <button
-              type="button"
-              className="text-signal"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(
-                    `${siteOrigin}/api/google/callback`,
-                  );
-                  setCopiedUri(true);
-                } catch {
-                  setCopiedUri(false);
-                }
-              }}
-            >
-              {copiedUri ? "Redirect URI copied" : "Copy redirect URI"}
-            </button>
-          </div>
-        ) : null}
       </div>
     </div>
   );

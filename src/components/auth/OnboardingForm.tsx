@@ -75,6 +75,24 @@ export function OnboardingForm({
             <span className="text-dim">{copy?.yourLink ?? "Your link "}</span>
             <span className="text-signal">{host}/book/{slug}</span>
           </p>
+          <label className="flex items-start gap-3 rounded-xl border border-line bg-void-2 px-4 py-3 text-sm text-dim">
+            <input
+              type="checkbox"
+              name="seedStarter"
+              value="1"
+              defaultChecked
+              className="mt-1 h-4 w-4 shrink-0 accent-signal"
+            />
+            <span>
+              <span className="block text-paper">
+                {copy?.seedYes ?? "Add a starter package and weekday hours"}
+              </span>
+              <span className="mt-1 block">
+                {copy?.seedHint ??
+                  "We can add a first package and weekday hours. Change them any time."}
+              </span>
+            </span>
+          </label>
           <button
             type="submit"
             disabled={pending || slugify(name).length < 3}

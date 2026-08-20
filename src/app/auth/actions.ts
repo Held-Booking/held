@@ -197,5 +197,25 @@ export async function completeOnboarding(formData: FormData) {
 
   if (error) return { error: dbErrorMessage(error.message) };
 
+  const seed = String(formData.get("seedStarter") ?? "") === "1";
+  if (seed) {
+    await supabase.from("services").insert({
+      vendor_id: user.id,
+      name: "Session",
+      duration_min: 60,
+      price_cents: 1_500_000,
+      deposit_percent: 30,
+      active: true,
+    });
+    await supabase.from("availability").insert(
+      [1, 2, 3, 4, 5].map((weekday) => ({
+        vendor_id: user.id,
+        weekday,
+        start_min: 9 * 60,
+        end_min: 18 * 60,
+      })),
+    );
+  }
+
   redirect("/dashboard");
 }

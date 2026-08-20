@@ -1,4 +1,5 @@
 import { Hero } from "@/components/marketing/Hero";
+import { HomeFaq } from "@/components/marketing/HomeFaq";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -10,9 +11,14 @@ import { formatMoney } from "@/lib/utils";
 export default async function Home() {
   const t = dict(await getLang());
   const steps = [
-    { k: "1", t: t.home.step1, d: t.home.step1d },
-    { k: "2", t: t.home.step2, d: t.home.step2d },
-    { k: "3", t: t.home.step3, d: t.home.step3d },
+    { k: "01", t: t.home.step1, d: t.home.step1d },
+    { k: "02", t: t.home.step2, d: t.home.step2d },
+    { k: "03", t: t.home.step3, d: t.home.step3d },
+  ];
+  const pillars = [
+    { t: t.home.whoTitle, d: t.home.whoBody },
+    { t: t.home.moneyTitle, d: t.home.moneyBody },
+    { t: t.home.whereTitle, d: t.home.whereBody },
   ];
 
   return (
@@ -21,37 +27,69 @@ export default async function Home() {
         <Hero copy={t.home} />
 
         <section className="relative z-10 px-4 py-14 text-center sm:px-6 sm:py-16 lg:px-10 lg:py-20 lg:text-start">
-          <Reveal className="mx-auto max-w-4xl">
-            <h2 className="font-display text-[clamp(1.55rem,6.5vw,4.5rem)] leading-[1.15]">
+          <Reveal className="mx-auto max-w-3xl">
+            <h2 className="text-[clamp(1.7rem,4.6vw,2.75rem)] font-semibold tracking-tight leading-[1.2]">
               {t.home.chatNotBooking}
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm text-dim sm:text-lg lg:mx-0">
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-dim sm:text-lg lg:mx-0">
               {t.home.ifTheyBook}
             </p>
           </Reveal>
         </section>
 
-        <section className="relative z-10 border-y border-line">
-          <div className="mx-auto grid max-w-6xl md:grid-cols-3">
-            {steps.map((step, i) => (
-              <Reveal
-                key={step.k}
-                delay={i * 0.06}
-                className="border-b border-line px-5 py-10 text-center last:border-b-0 md:border-b-0 md:border-r md:px-6 md:py-12 md:last:border-r-0 lg:text-start"
-              >
-                <p className="font-display text-2xl text-signal sm:text-4xl">
-                  {step.k}
+        <section className="relative z-10 px-4 py-4 sm:px-6 lg:px-10">
+          <Reveal className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-line bg-void-2 sm:rounded-3xl">
+            <ol>
+              {steps.map((step, i) => (
+                <li
+                  key={step.k}
+                  className={`flex gap-4 px-5 py-7 text-start sm:gap-6 sm:px-8 sm:py-8 ${
+                    i < steps.length - 1 ? "border-b border-line" : ""
+                  }`}
+                >
+                  <p className="w-8 shrink-0 text-sm font-semibold tracking-[0.12em] text-signal">
+                    {step.k}
+                  </p>
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-semibold tracking-tight sm:text-xl">
+                      {step.t}
+                    </h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-dim sm:text-base">
+                      {step.d}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        </section>
+
+        <section className="relative z-10 px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
+          <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-3 md:gap-8">
+            {pillars.map((block, i) => (
+              <Reveal key={block.t} delay={i * 0.05} className="text-center md:text-start">
+                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-signal">
+                  {String(i + 1).padStart(2, "0")}
                 </p>
-                <h3 className="mt-3 font-display text-lg sm:mt-5 sm:text-3xl">
-                  {step.t}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-dim sm:mt-3 sm:text-base">
-                  {step.d}
+                <h3 className="mt-3 text-xl font-semibold tracking-tight">{block.t}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-dim sm:text-base">
+                  {block.d}
                 </p>
               </Reveal>
             ))}
           </div>
         </section>
+
+        <HomeFaq
+          title={t.home.faqTitle}
+          items={[
+            { q: t.home.faq1q, a: t.home.faq1a },
+            { q: t.home.faq2q, a: t.home.faq2a },
+            { q: t.home.faq3q, a: t.home.faq3a },
+            { q: t.home.faq4q, a: t.home.faq4a },
+            { q: t.home.faq5q, a: t.home.faq5a },
+          ]}
+        />
 
         <section className="relative z-10 px-4 py-16 sm:px-6 sm:pb-20 lg:px-10 lg:pb-24">
           <Reveal className="mx-auto max-w-5xl rounded-2xl border border-line bg-void-2 px-5 py-12 text-center sm:rounded-3xl sm:px-12 sm:py-14">
