@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { BRAND, DEMO_SLUG } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
+import type { Theme } from "@/lib/theme";
 import { WeekMark } from "@/components/brand/WeekMark";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
@@ -26,6 +28,7 @@ function isActive(pathname: string, href: string) {
 
 export function SiteHeader({
   lang = "en",
+  theme = "dark",
   labels = {
     home: "Home",
     demo: "Demo",
@@ -36,6 +39,7 @@ export function SiteHeader({
   },
 }: {
   lang?: Locale;
+  theme?: Theme;
   labels?: {
     home: string;
     demo: string;
@@ -106,7 +110,7 @@ export function SiteHeader({
                           onMouseEnter={() => setHover(item.href)}
                           className={cn(
                             "relative rounded-full px-4 py-1.5 text-sm",
-                            on ? "text-void" : "text-dim hover:text-paper",
+                            on ? "text-on-pill" : "text-dim hover:text-paper",
                             !item.laptop && "lg:hidden",
                           )}
                         >
@@ -132,6 +136,10 @@ export function SiteHeader({
                 </nav>
 
                 <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2">
+                  <ThemeToggle
+                    current={theme}
+                    className="h-9 w-9 border-0 bg-transparent sm:h-10 sm:w-10"
+                  />
                   <LanguageSwitcher current={lang} />
                   <Link
                     href="/login"
@@ -172,7 +180,7 @@ export function SiteHeader({
                   href={item.href}
                   className={cn(
                     "relative flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[11px] font-medium leading-none",
-                    on ? "text-void" : "text-dim",
+                    on ? "text-on-pill" : "text-dim",
                   )}
                 >
                   {on ? (

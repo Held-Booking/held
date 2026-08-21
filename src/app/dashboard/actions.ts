@@ -12,7 +12,9 @@ import {
   resolvePaystackAccount,
   upsertPaystackSubaccount,
 } from "@/lib/paystack";
+import { draftPackages, type DraftPackage } from "@/lib/package-draft";
 import { isPlanInterval, planAmountCents } from "@/lib/plan";
+import { reviewTableMissing } from "@/lib/reviews";
 import { timeToMinutes } from "@/lib/schedule";
 import { instantFromZoned } from "@/lib/timezone";
 
@@ -527,6 +529,85 @@ export async function savePhoto(formData: FormData) {
     };
   }
 
+  refresh(profile.slug);
+  return { error: null };
+}
+
+export async function draftHeldPackages(formData: FormData): Promise<{
+  error: string | null;
+  packages: DraftPackage[];
+}> {
+  const { profile } = await requireVendor();
+  const text = String(formData.get("text") ?? "").trim();
+  if (text.length < 8) {
+    return { error: "Write a bit more about how you work.", packages: [] };
+  }
+  const packages = await draftPackages({
+    text,
+    bio: String(formData.get("bio") ?? profile.bio ?? ""),
+    currency: String(formData.get("currency") ?? profile.currency ?? "NGN"),
+  });
+  if (packages.length === 0) {
+    return { error: "Could not draft packages. Add one by hand.", packages: [] };
+  }
+  return { error: null, packages };
+}
+
+export async function saveHeldReview(formData: FormData) {
+  const { supabase, user, profile } = await requireVendor();
+  const body = String(formData.get("body") ?? "").trim();
+  const displayName = String(formData.get("displayName") ?? "").trim();
+  const trade = String(formData.get("trade") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const rating = Number(formData.get("rating") ?? 5);
+  const publish = String(formData.get("publish") ?? "") === "yes";
+
+  if (body.length < 8 || body.length > 280) {
+    return { error: "Keep it between 8 and 280 characters." };
+  }
+  if (displayName.length < 2) return { error: "Add the name to show." };
+  if (rating < 3 || rating > 5) return { error: "Pick 3 to 5 stars." };
+
+  const { error } = await supabase.from("held_reviews").upsert(
+    {
+      vendor_id: user.id,
+      body,
+      display_name: displayName,
+      trade: trade || null,
+      city: city || null,
+      rating,
+      publish,
+      source: "in_app",
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "vendor_id" },
+  );
+  if (error) {
+    if (reviewTableMissing(error.message)) {
+      return {
+        error:
+          "Review table is missing. Run supabase/migrations/011_reviews.sql in the Supabase SQL Editor.",
+      };
+    }
+    return { error: dbErrorMessage(error.message) };
+  }
+  refresh(profile.slug);
+  revalidatePath("/");
+  return { error: null };
+}
+
+export async function hideReviewPrompt() {
+  const { supabase, user, profile } = await requireVendor();
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      review_prompt_hidden_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+  if (error && !reviewTableMissing(error.message)) {
+    return { error: dbErrorMessage(error.message) };
+  }
   refresh(profile.slug);
   return { error: null };
 }

@@ -16,7 +16,7 @@ export function CopyLink({
   return (
     <button
       type="button"
-      className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-paper px-5 text-sm font-medium text-void sm:w-auto"
+      className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-paper px-5 text-sm font-medium text-void active:scale-[0.98] active:opacity-80 sm:w-auto"
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(value);

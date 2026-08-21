@@ -17,6 +17,7 @@ const MARKETING: Array<{
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/pricing", changeFrequency: "weekly", priority: 0.9 },
   { path: "/how-it-works", changeFrequency: "monthly", priority: 0.9 },
+  { path: "/about", changeFrequency: "monthly", priority: 0.8 },
   { path: `/book/${DEMO_SLUG}`, changeFrequency: "weekly", priority: 0.8 },
   { path: "/help", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.6 },

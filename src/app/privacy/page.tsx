@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMeta({
 export default function PrivacyPage() {
   return (
     <LegalPage kicker="legal" title="Privacy" path="/privacy">
-      <p>Last updated 20 August 2026.</p>
+      <p>Last updated 21 August 2026.</p>
       <p>
         This notice explains what Held collects, why we collect it, who can see it, and how you can ask us to change or delete it. It applies to people who create a Held page and to people who book through one. Held is booking software. We are not a marketplace and we do not sell personal data. The controller is {CONTACT.legalName}, {CONTACT.address}. Write to{" "}
         <a href={`mailto:${CONTACT.email}`} className="text-signal">
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         From clients we store name, email, phone or WhatsApp if provided, the package and time booked, deposit amount, and payment status. We do not store full card numbers. Paystack (or another processor named at checkout) handles the card or transfer.
       </p>
       <p>
-        We also store technical logs needed to run the service, such as sign in time and basic device data used to keep the session secure. We do not use that data to build advertising profiles.
+        We also store technical logs needed to run the service, such as sign in time and basic device data used to keep the session secure. We do not use that data to build advertising profiles. A theme cookie remembers dark or light on this device. Language uses a separate cookie.
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Why we collect it</h2>
@@ -48,12 +48,12 @@ export default function PrivacyPage() {
         The public booking page shows the professional’s name, photo if added, packages, prices, and open times. It does not show bank account numbers, login details, or a client’s private contact information to strangers.
       </p>
       <p>
-        Paystack processes payments. Supabase stores application data. Resend sends mail when that service is connected. Google Calendar receives booking times only if the professional chooses to connect Google. Each of those providers processes data to provide that function, not to sell it for us.
+        Paystack processes payments. Supabase stores application data. Resend sends mail when that service is connected. Google Calendar receives booking times only if the professional chooses to connect Google. If you paste text to draft packages, that text is used only to suggest packages for your page. If an optional writing key is configured, that text may be sent to that provider to draft the packages, then discarded. Each of those providers processes data to provide that function, not to sell it for us.
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Mail and WhatsApp</h2>
       <p>
-        After a deposit, Held may email the professional and the client, and may show a WhatsApp link. Those messages exist so the booking is real and so you can reach each other. They are not advertising. You can stop extra product mail by asking from the email on the account. Transactional booking mail may still be needed for a paid reservation.
+        After a deposit, Held may email the professional and the client, and may show a WhatsApp link. Those messages exist so the booking is real and so you can reach each other. They are not advertising. You can stop extra product mail by asking from the email on the account. Transactional booking mail may still be needed for a paid reservation. If you run a page, we may ask for one sentence about Held. We only show that sentence on bookheld.app if you tick the box that allows it.
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">How long we keep it</h2>

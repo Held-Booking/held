@@ -93,6 +93,15 @@ export default function HelpPage() {
         Yes. Open Settings after you have a page. Connect Google there. New paid bookings can land on that calendar.
       </p>
 
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Who is Held?</h2>
+      <p>
+        {CONTACT.legalName} makes the software. Read{" "}
+        <Link href="/about" className="text-signal">
+          About Held
+        </Link>
+        . If you booked a professional, write to them, not to us.
+      </p>
+
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Still stuck</h2>
       <p>
         Open{" "}

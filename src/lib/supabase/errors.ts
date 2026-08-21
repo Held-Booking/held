@@ -33,6 +33,9 @@ export function dbErrorMessage(message?: string | null) {
   ) {
     return "Run supabase/migrations/009_ops.sql in the Supabase SQL Editor.";
   }
+  if ((message ?? "").toLowerCase().includes("held_reviews")) {
+    return "Review table is missing. Run supabase/migrations/011_reviews.sql in the Supabase SQL Editor.";
+  }
   if (isMissingSchema(message)) {
     return "Database tables are missing. Run supabase/migrations/001_init.sql in the Supabase SQL Editor, not sqliteonline.";
   }

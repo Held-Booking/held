@@ -1,6 +1,7 @@
 import { Hero } from "@/components/marketing/Hero";
 import { HomeFaq } from "@/components/marketing/HomeFaq";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
+import { VoiceOfHeld } from "@/components/marketing/VoiceOfHeld";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -8,6 +9,7 @@ import { BRAND, DEMO_SLUG, PRICE } from "@/lib/constants";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { faqNode, pageMeta } from "@/lib/seo";
+import { listPublishedReviews, reviewsNode } from "@/lib/reviews";
 import { formatMoney } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -21,6 +23,8 @@ export const metadata: Metadata = pageMeta({
 
 export default async function Home() {
   const t = dict(await getLang());
+  const reviews = await listPublishedReviews();
+  const reviewSchema = reviewsNode(reviews);
   const faqs = [
     { q: t.home.faq1q, a: t.home.faq1a },
     { q: t.home.faq2q, a: t.home.faq2a },
@@ -42,6 +46,7 @@ export default async function Home() {
   return (
     <SiteChrome>
       <JsonLd data={faqNode(faqs)} />
+      {reviewSchema ? <JsonLd data={reviewSchema} /> : null}
       <main>
         <Hero copy={t.home} />
 
@@ -98,6 +103,8 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        <VoiceOfHeld reviews={reviews} />
 
         <HomeFaq title={t.home.faqTitle} items={faqs} />
 

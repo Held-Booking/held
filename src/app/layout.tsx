@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { BRAND, CONTACT } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { getTheme } from "@/lib/theme-server";
+import { THEME_COLORS } from "@/lib/theme";
 import { AuthLinkCatch } from "@/components/auth/AuthLinkCatch";
 import { FaviconSpread } from "@/components/brand/FaviconSpread";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -27,12 +29,16 @@ const display = Syne({
   weight: ["700", "800"],
 });
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  viewportFit: "cover",
-  themeColor: "#07080a",
-};
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await getTheme();
+  return {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+    colorScheme: theme,
+    themeColor: THEME_COLORS[theme],
+  };
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
@@ -117,11 +123,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const lang = await getLang();
+  const theme = await getTheme();
   return (
     <html
       lang={lang}
       dir={isRtl(lang) ? "rtl" : "ltr"}
-      className={`${sans.variable} ${display.variable} h-full overflow-x-clip antialiased`}
+      className={`${sans.variable} ${display.variable} h-full overflow-x-clip antialiased${theme === "light" ? " light" : ""}`}
+      style={{ colorScheme: theme }}
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />

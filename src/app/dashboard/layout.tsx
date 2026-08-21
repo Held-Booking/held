@@ -4,8 +4,10 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
 import { SetupNotice } from "@/components/dashboard/SetupNotice";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { getTheme } from "@/lib/theme-server";
 import { NOINDEX } from "@/lib/seo";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { isMissingSchema } from "@/lib/supabase/errors";
@@ -22,9 +24,10 @@ export default async function DashboardLayout({
 }) {
   if (!isSupabaseConfigured()) {
     const lang = await getLang();
+    const theme = await getTheme();
     const t = dict(lang);
     return (
-      <Shell lang={lang} labels={t.dash}>
+      <Shell lang={lang} theme={theme} labels={t.dash}>
         <SetupNotice
           title="Keys missing"
           body="Held needs a .env.local file with your Supabase URL and anon key. The URL must start with https://"
@@ -47,9 +50,10 @@ export default async function DashboardLayout({
 
   if (isMissingSchema(error?.message)) {
     const lang = await getLang();
+    const theme = await getTheme();
     const t = dict(lang);
     return (
-      <Shell lang={lang} labels={t.dash}>
+      <Shell lang={lang} theme={theme} labels={t.dash}>
         <SetupNotice
           title="Tables missing"
           body="The SQL has to run inside your Supabase project. sqliteonline.com is a different database, so those tables never existed here."
@@ -61,17 +65,24 @@ export default async function DashboardLayout({
   if (!profile?.slug) redirect("/onboarding");
 
   const lang = await getLang();
+  const theme = await getTheme();
   const t = dict(lang);
-  return <Shell lang={lang} labels={t.dash}>{children}</Shell>;
+  return (
+    <Shell lang={lang} theme={theme} labels={t.dash}>
+      {children}
+    </Shell>
+  );
 }
 
 function Shell({
   children,
   lang = "en",
+  theme = "dark",
   labels,
 }: {
   children: React.ReactNode;
   lang?: import("@/lib/i18n").Locale;
+  theme?: import("@/lib/theme").Theme;
   labels?: {
     today: string;
     bookings: string;
@@ -100,13 +111,17 @@ function Shell({
             <span className="text-signal">.</span>
           </Link>
           <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle current={theme} className="h-11 w-11 bg-void" />
             <LanguageSwitcher current={lang} />
             <SignOutButton label={nav.logout} compact />
           </div>
         </div>
         <DashboardNav labels={nav} />
         <div className="mt-3 hidden lg:block">
-          <LanguageSwitcher current={lang} />
+          <div className="flex items-center gap-2">
+            <ThemeToggle current={theme} className="h-11 w-11 bg-void" />
+            <LanguageSwitcher current={lang} />
+          </div>
           <SignOutButton label={nav.logout} />
         </div>
       </aside>

@@ -1,5 +1,7 @@
 import { revalidatePath } from "next/cache";
+import { sendMail } from "@/lib/mail";
 import { createAdminSupabase } from "@/lib/supabase/admin";
+import { isResendConfigured } from "@/lib/supabase/config";
 import {
   findPaystackSubscription,
   verifyPaystack,
@@ -66,6 +68,11 @@ export async function fulfillHeldPlan(input: {
   const { error } = await admin.from("profiles").update(patch).eq("id", vendorId);
 
   if (error) return { ok: false as const, error: error.message };
+  try {
+    await askHeldReview(vendorId);
+  } catch {
+    // Asking for a review must never undo a paid plan.
+  }
   refresh();
   return { ok: true as const };
 }
@@ -115,4 +122,50 @@ export async function markPlanPastDue(input: {
   if (error) return { ok: false as const, error: error.message };
   refresh();
   return { ok: true as const };
+}
+
+async function askHeldReview(vendorId: string) {
+  if (!isResendConfigured()) return;
+  const admin = createAdminSupabase();
+  const { data: profile, error } = await admin
+    .from("profiles")
+    .select("display_name, review_ask_sent_at")
+    .eq("id", vendorId)
+    .maybeSingle();
+  if (error || !profile || profile.review_ask_sent_at) return;
+
+  const { data: review } = await admin
+    .from("held_reviews")
+    .select("id")
+    .eq("vendor_id", vendorId)
+    .maybeSingle();
+  if (review) return;
+
+  const { data: userData } = await admin.auth.admin.getUserById(vendorId);
+  const email = userData.user?.email;
+  if (!email) return;
+
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://www.bookheld.app";
+  const name = (profile.display_name as string) || "there";
+  await sendMail({
+    to: email,
+    subject: "One line about Held",
+    text: [
+      `Hi ${name},`,
+      "",
+      "Did the page hold a date? Reply in the dashboard in one sentence if you want.",
+      `${origin}/dashboard`,
+      "",
+      "Only tick the box if we may show it on bookheld.app.",
+    ].join("\n"),
+  });
+  await admin
+    .from("profiles")
+    .update({
+      review_ask_sent_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", vendorId)
+    .is("review_ask_sent_at", null);
 }

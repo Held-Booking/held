@@ -8,6 +8,22 @@
   --line: rgba(243, 244, 246, 0.12);
   --signal: #7eb4ff;
   --signal-dim: rgba(126, 180, 255, 0.16);
+  --pill: #f3f4f6;
+  --on-pill: #07080a;
+  color-scheme: dark;
+}
+
+html.light {
+  --void: #f4f5f7;
+  --void-2: #ffffff;
+  --paper: #101216;
+  --dim: #5c616c;
+  --line: rgba(16, 18, 22, 0.12);
+  --signal: #2b6fd6;
+  --signal-dim: rgba(43, 111, 214, 0.14);
+  --pill: #101216;
+  --on-pill: #f4f5f7;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -18,6 +34,8 @@
   --color-line: var(--line);
   --color-signal: var(--signal);
   --color-signal-dim: var(--signal-dim);
+  --color-pill: var(--pill);
+  --color-on-pill: var(--on-pill);
   --font-sans: var(--font-sans-en);
   --font-display: var(--font-display-en);
 }
@@ -37,7 +55,7 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   font-feature-settings: "ss01" on, "cv11" on;
   overflow-x: clip;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--signal) 34%, transparent);
   touch-action: manipulation;
 }
 
@@ -116,10 +134,35 @@ html[lang="zh"] .font-display {
 }
 
 .glass-pill {
-  background: #f3f4f6;
+  background: var(--pill);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
     0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+html.light .glass-island {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(16, 18, 22, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 28px rgba(16, 18, 22, 0.08);
+}
+
+html.light .glass-chip {
+  background: rgba(16, 18, 22, 0.05);
+  border: 1px solid rgba(16, 18, 22, 0.1);
+  box-shadow: none;
+}
+
+html.light .grain {
+  opacity: 0.04;
+  mix-blend-mode: multiply;
+}
+
+html.light .horizon {
+  background-image:
+    linear-gradient(rgba(43, 111, 214, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 111, 214, 0.1) 1px, transparent 1px);
 }
 
 @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
@@ -137,6 +180,18 @@ html[lang="zh"] .font-display {
     background: rgba(255, 255, 255, 0.1);
     -webkit-backdrop-filter: blur(10px) saturate(140%);
     backdrop-filter: blur(10px) saturate(140%);
+  }
+
+  html.light .glass-island {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.78) 100%
+    );
+  }
+
+  html.light .glass-chip {
+    background: rgba(16, 18, 22, 0.05);
   }
 }
 
@@ -208,6 +263,84 @@ html[lang="zh"] .font-display {
   }
 }
 
+a,
+button,
+summary,
+[role="button"],
+select,
+label:has(> input[type="file"]),
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+::file-selector-button {
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--signal) 34%, transparent);
+}
+
+button:not(:disabled),
+input[type="submit"]:not(:disabled),
+input[type="button"]:not(:disabled),
+input[type="reset"]:not(:disabled),
+select:not(:disabled),
+summary,
+[role="button"],
+::file-selector-button {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
+a,
+button,
+summary,
+[role="button"],
+select,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+::file-selector-button {
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    opacity 0.12s ease,
+    filter 0.12s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+a:active {
+  color: var(--signal);
+  opacity: 0.7;
+}
+
+button:active:not(:disabled),
+input[type="submit"]:active:not(:disabled),
+input[type="button"]:active:not(:disabled),
+input[type="reset"]:active:not(:disabled),
+select:active:not(:disabled),
+summary:active,
+[role="button"]:active,
+::file-selector-button:active {
+  transform: translateY(1px) scale(0.98);
+  filter: brightness(0.9);
+  opacity: 0.88;
+}
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .horizon,
   .scan,
@@ -215,5 +348,28 @@ html[lang="zh"] .font-display {
   html {
     animation: none !important;
     scroll-behavior: auto;
+  }
+
+  a,
+  button,
+  summary,
+  [role="button"],
+  select,
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  ::file-selector-button {
+    transition: none;
+  }
+
+  button:active:not(:disabled),
+  input[type="submit"]:active:not(:disabled),
+  input[type="button"]:active:not(:disabled),
+  input[type="reset"]:active:not(:disabled),
+  select:active:not(:disabled),
+  summary:active,
+  [role="button"]:active,
+  ::file-selector-button:active {
+    transform: none;
   }
 }

@@ -35,7 +35,11 @@ export default function ContactPage() {
         {CONTACT.address}
       </p>
       <p>
-        Product questions:{" "}
+        Open{" "}
+        <Link href="/about" className="text-signal">
+          About Held
+        </Link>
+        {" "}for the company. Product questions:{" "}
         <a href={`mailto:${CONTACT.email}`} className="text-signal">
           {CONTACT.email}
         </a>

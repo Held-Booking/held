@@ -16,6 +16,7 @@ Canonical site: ${absUrl()}
 ## Product
 - [Home](${absUrl()}/): What Held is and who it is for
 - [How it works](${absUrl("/how-it-works")}): Steps from link to held date
+- [About](${absUrl("/about")}): Held Software Limited. Booking software, not a payment company
 - [Pricing](${absUrl("/pricing")}): $${PRICE.monthly}/month or $${PRICE.yearly}/year, 14 day trial, no cut of the job
 - [Demo](${absUrl("/book/kade")}): A sample booking page. It cannot take a real deposit
 - [Help](${absUrl("/help")}): Short answers for professionals and clients

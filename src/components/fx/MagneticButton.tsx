@@ -32,7 +32,7 @@ export function MagneticButton({
       }}
       onPointerLeave={() => setDelta({ x: 0, y: 0 })}
       className={cn(
-        "relative min-h-12 w-full overflow-hidden rounded-full bg-paper px-7 text-sm font-medium text-void transition-shadow duration-300 hover:shadow-[0_0_36px_rgba(243,244,246,0.22)] sm:w-auto",
+        "relative min-h-12 w-full overflow-hidden rounded-full bg-paper px-7 text-sm font-medium text-void transition-shadow duration-300 hover:shadow-[0_0_36px_rgba(243,244,246,0.22)] active:opacity-80 sm:w-auto",
         className,
       )}
       style={{

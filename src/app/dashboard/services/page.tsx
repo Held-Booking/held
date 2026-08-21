@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PackageDraft } from "@/components/dashboard/PackageDraft";
 import { PackageEditor } from "@/components/dashboard/PackageEditor";
 import { requireVendor } from "@/lib/supabase/vendor";
 
@@ -24,9 +25,15 @@ export default async function ServicesPage() {
   }));
 
   return (
-    <PackageEditor
-      initial={initial}
-      currency={(profile.currency as string) || "NGN"}
-    />
+    <>
+      <PackageEditor
+        initial={initial}
+        currency={(profile.currency as string) || "NGN"}
+      />
+      <PackageDraft
+        currency={(profile.currency as string) || "NGN"}
+        bio={profile.bio}
+      />
+    </>
   );
 }

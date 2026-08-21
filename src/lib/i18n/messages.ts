@@ -10,14 +10,21 @@ const en = {
     language: "Language",
   },
   footer: {
+    product: "Product",
+    company: "Company",
+    support: "Support",
+    legal: "Legal",
     pricing: "Pricing",
     terms: "Terms",
     privacy: "Privacy",
     contact: "Contact",
+    about: "About Held",
     help: "Help",
     how: "How it works",
     security: "Security",
+    demo: "Demo",
     line: "Booking software for professionals.",
+    rights: "All rights reserved.",
   },
   home: {
     eyebrow: "Booking software for professionals",
@@ -211,7 +218,7 @@ const en = {
 
 const fr: typeof en = {
   nav: { home: "Accueil", demo: "Démo", pricing: "Tarifs", login: "Connexion", start: "Commencer", language: "Langue" },
-  footer: { pricing: "Tarifs", terms: "Conditions", privacy: "Confidentialité", contact: "Contact", help: "Aide", how: "Comment ça marche", security: "Sécurité", line: "Logiciel de réservation pour professionnels." },
+  footer: { product: "Produit", company: "Société", support: "Assistance", legal: "Mentions légales", pricing: "Tarifs", terms: "Conditions", privacy: "Confidentialité", contact: "Contact", about: "À propos de Held", help: "Aide", how: "Comment ça marche", security: "Sécurité", demo: "Démo", line: "Logiciel de réservation pour professionnels.", rights: "Tous droits réservés." },
   home: {
     eyebrow: "Logiciel de réservation pour les professionnels",
     hold: "GARDER",
@@ -404,7 +411,7 @@ const fr: typeof en = {
 
 const es: typeof en = {
   nav: { home: "Inicio", demo: "Demo", pricing: "Precios", login: "Entrar", start: "Empezar", language: "Idioma" },
-  footer: { pricing: "Precios", terms: "Términos", privacy: "Privacidad", contact: "Contacto", help: "Ayuda", how: "Cómo funciona", security: "Seguridad", line: "Software de reservas para profesionales." },
+  footer: { product: "Producto", company: "Empresa", support: "Soporte", legal: "Legal", pricing: "Precios", terms: "Términos", privacy: "Privacidad", contact: "Contacto", about: "Sobre Held", help: "Ayuda", how: "Cómo funciona", security: "Seguridad", demo: "Demo", line: "Software de reservas para profesionales.", rights: "Todos los derechos reservados." },
   home: {
     eyebrow: "Software de reservas para profesionales",
     hold: "RESERVA",
@@ -597,7 +604,7 @@ const es: typeof en = {
 
 const pt: typeof en = {
   nav: { home: "Início", demo: "Demo", pricing: "Preços", login: "Entrar", start: "Começar", language: "Idioma" },
-  footer: { pricing: "Preços", terms: "Termos", privacy: "Privacidade", contact: "Contacto", help: "Ajuda", how: "Como funciona", security: "Segurança", line: "Software de reservas para profissionais." },
+  footer: { product: "Produto", company: "Empresa", support: "Apoio", legal: "Legal", pricing: "Preços", terms: "Termos", privacy: "Privacidade", contact: "Contacto", about: "Sobre a Held", help: "Ajuda", how: "Como funciona", security: "Segurança", demo: "Demo", line: "Software de reservas para profissionais.", rights: "Todos os direitos reservados." },
   home: {
     eyebrow: "Software de reservas para profissionais",
     hold: "SEGURE",
@@ -790,7 +797,7 @@ const pt: typeof en = {
 
 const de: typeof en = {
   nav: { home: "Start", demo: "Demo", pricing: "Preise", login: "Anmelden", start: "Starten", language: "Sprache" },
-  footer: { pricing: "Preise", terms: "Bedingungen", privacy: "Datenschutz", contact: "Kontakt", help: "Hilfe", how: "So funktioniert es", security: "Sicherheit", line: "Buchungssoftware für Profis." },
+  footer: { product: "Produkt", company: "Unternehmen", support: "Support", legal: "Rechtliches", pricing: "Preise", terms: "Bedingungen", privacy: "Datenschutz", contact: "Kontakt", about: "Über Held", help: "Hilfe", how: "So funktioniert es", security: "Sicherheit", demo: "Demo", line: "Buchungssoftware für Profis.", rights: "Alle Rechte vorbehalten." },
   home: {
     eyebrow: "Buchungssoftware für Profis",
     hold: "HALTE",
@@ -983,7 +990,7 @@ const de: typeof en = {
 
 const ar: typeof en = {
   nav: { home: "الرئيسية", demo: "تجربة", pricing: "الأسعار", login: "دخول", start: "ابدأ", language: "اللغة" },
-  footer: { pricing: "الأسعار", terms: "الشروط", privacy: "الخصوصية", contact: "تواصل", help: "مساعدة", how: "كيف يعمل", security: "الأمان", line: "برنامج حجز للمهنيين." },
+  footer: { product: "المنتج", company: "الشركة", support: "الدعم", legal: "قانوني", pricing: "الأسعار", terms: "الشروط", privacy: "الخصوصية", contact: "تواصل", about: "عن Held", help: "مساعدة", how: "كيف يعمل", security: "الأمان", demo: "تجربة", line: "برنامج حجز للمهنيين.", rights: "جميع الحقوق محفوظة." },
   home: {
     eyebrow: "برنامج حجز للمهنيين",
     hold: "احجز",
@@ -1176,7 +1183,7 @@ const ar: typeof en = {
 
 const zh: typeof en = {
   nav: { home: "首页", demo: "演示", pricing: "价格", login: "登录", start: "开始", language: "语言" },
-  footer: { pricing: "价格", terms: "条款", privacy: "隐私", contact: "联系", help: "帮助", how: "如何使用", security: "安全", line: "面向专业人士的预约软件。" },
+  footer: { product: "产品", company: "公司", support: "支持", legal: "法律", pricing: "价格", terms: "条款", privacy: "隐私", contact: "联系", about: "关于 Held", help: "帮助", how: "如何使用", security: "安全", demo: "演示", line: "面向专业人士的预约软件。", rights: "保留所有权利。" },
   home: {
     eyebrow: "面向专业人士的预约软件",
     hold: "锁定",

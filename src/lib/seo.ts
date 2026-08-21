@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRAND, CONTACT, PRICE } from "@/lib/constants";
+import { BRAND, CONTACT, PRICE, SOCIAL } from "@/lib/constants";
 
 export function siteUrl() {
   const raw =
@@ -86,6 +86,14 @@ export function safeJsonLd(data: unknown) {
 
 export function organizationNode() {
   const id = `${absUrl()}/#org`;
+  const sameAs = [
+    process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim(),
+    SOCIAL.instagram,
+    SOCIAL.x,
+    SOCIAL.linkedin,
+    SOCIAL.facebook,
+    SOCIAL.tiktok,
+  ].filter((url): url is string => Boolean(url));
   return {
     "@type": "Organization",
     "@id": id,
@@ -105,6 +113,8 @@ export function organizationNode() {
     address: {
       "@type": "PostalAddress",
       streetAddress: CONTACT.address,
+      addressLocality: "Ilorin",
+      addressRegion: "Kwara",
       addressCountry: "NG",
     },
     contactPoint: {
@@ -114,6 +124,7 @@ export function organizationNode() {
       areaServed: ["NG", "GH", "KE", "ZA", "CI", "US"],
       availableLanguage: ["English", "French", "Spanish", "Portuguese", "German", "Arabic", "Chinese"],
     },
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
 

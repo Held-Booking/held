@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CopyLink } from "@/components/dashboard/CopyLink";
+import { CopyDraft } from "@/components/dashboard/CopyDraft";
+import { ReviewAsk } from "@/components/dashboard/ReviewAsk";
 import { PAYSTACK_COUNTRIES } from "@/lib/gateways";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { pagePathLabel } from "@/lib/page-url";
 import { planDaysLeft, planIsLive } from "@/lib/plan";
+import { reviewTableMissing } from "@/lib/reviews";
 import { requireVendor } from "@/lib/supabase/vendor";
 import { addCalendarDays, instantFromZoned, zonedParts } from "@/lib/timezone";
 import { formatWhen } from "@/lib/when";
@@ -30,6 +33,7 @@ export default async function DashboardHomePage() {
     { count: hourCount },
     { count: todayCount },
     { data: nextBooking },
+    { count: confirmedCount },
   ] = await Promise.all([
     supabase
       .from("services")
@@ -55,6 +59,11 @@ export default async function DashboardHomePage() {
       .order("starts_at", { ascending: true })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("vendor_id", user.id)
+      .eq("status", "confirmed"),
   ]);
 
   const country = ((profile.country as string) || "NG").toUpperCase();
@@ -72,6 +81,29 @@ export default async function DashboardHomePage() {
   const pageUrl = `${origin}/book/${profile.slug}`;
   const shareUrl = `https://wa.me/?text=${encodeURIComponent(`Book with ${profile.display_name}: ${pageUrl}`)}`;
   const emailShare = `mailto:?subject=${encodeURIComponent(`Book with ${profile.display_name}`)}&body=${encodeURIComponent(pageUrl)}`;
+
+  let showReview = false;
+  if (paid || (confirmedCount ?? 0) > 0) {
+    const reviewRow = await supabase
+      .from("held_reviews")
+      .select("id")
+      .eq("vendor_id", user.id)
+      .maybeSingle();
+    const flags = await supabase
+      .from("profiles")
+      .select("review_prompt_hidden_at")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (
+      !reviewTableMissing(reviewRow.error?.message) &&
+      !reviewTableMissing(flags.error?.message) &&
+      !reviewRow.data &&
+      !(flags.data as { review_prompt_hidden_at?: string | null } | null)
+        ?.review_prompt_hidden_at
+    ) {
+      showReview = true;
+    }
+  }
 
   const nextService = nextBooking?.services as
     | { name?: string }
@@ -218,6 +250,14 @@ export default async function DashboardHomePage() {
           </p>
         </>
       )}
+
+      {showReview ? (
+        <ReviewAsk displayName={(profile.display_name as string) || ""} />
+      ) : null}
+      <CopyDraft
+        name={(profile.display_name as string) || "Held"}
+        pageUrl={pageUrl}
+      />
     </div>
   );
 }
