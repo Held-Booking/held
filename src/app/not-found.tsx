@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { NOINDEX } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: NOINDEX,
+};
 
 export default function NotFound() {
   return (

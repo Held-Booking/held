@@ -21,8 +21,11 @@ import { formatMoney } from "@/lib/utils";
 import { formatWhen } from "@/lib/when";
 import { whatsappUrl } from "@/lib/whatsapp";
 
+import { NOINDEX } from "@/lib/seo";
+
 export const metadata: Metadata = {
   title: "Booked",
+  robots: NOINDEX,
 };
 
 export const dynamic = "force-dynamic";

@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
 import { CONTACT, SOCIAL } from "@/lib/constants";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Contact" };
+export const metadata: Metadata = pageMeta({
+  title: "Contact",
+  description:
+    "Write to Held Software Limited at hello@bookheld.app. If you booked someone, write to them. Held is not a party to that job.",
+  path: "/contact",
+});
 
 const SOCIAL_ITEMS = [
   { href: SOCIAL.whatsapp, label: "WhatsApp" },
@@ -18,7 +24,7 @@ export default function ContactPage() {
   const socials = SOCIAL_ITEMS.filter((item) => item.href);
 
   return (
-    <LegalPage kicker="held" title="Contact">
+    <LegalPage kicker="held" title="Contact" path="/contact">
       <p>
         Held is booking software. Who you write to depends on what you need.
       </p>

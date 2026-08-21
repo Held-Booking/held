@@ -3,13 +3,31 @@ import { HomeFaq } from "@/components/marketing/HomeFaq";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { DEMO_SLUG, PRICE } from "@/lib/constants";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { BRAND, DEMO_SLUG, PRICE } from "@/lib/constants";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { faqNode, pageMeta } from "@/lib/seo";
 import { formatMoney } from "@/lib/utils";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = pageMeta({
+  title: `${BRAND.name} · ${BRAND.tagline}`,
+  description:
+    "Booking software for professionals who still take clients in chat. One page, a deposit, and the date is held. $12 a month. No cut of the job.",
+  path: "/",
+  absoluteTitle: true,
+});
 
 export default async function Home() {
   const t = dict(await getLang());
+  const faqs = [
+    { q: t.home.faq1q, a: t.home.faq1a },
+    { q: t.home.faq2q, a: t.home.faq2a },
+    { q: t.home.faq3q, a: t.home.faq3a },
+    { q: t.home.faq4q, a: t.home.faq4a },
+    { q: t.home.faq5q, a: t.home.faq5a },
+  ];
   const steps = [
     { k: "01", t: t.home.step1, d: t.home.step1d },
     { k: "02", t: t.home.step2, d: t.home.step2d },
@@ -23,6 +41,7 @@ export default async function Home() {
 
   return (
     <SiteChrome>
+      <JsonLd data={faqNode(faqs)} />
       <main>
         <Hero copy={t.home} />
 
@@ -80,16 +99,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <HomeFaq
-          title={t.home.faqTitle}
-          items={[
-            { q: t.home.faq1q, a: t.home.faq1a },
-            { q: t.home.faq2q, a: t.home.faq2a },
-            { q: t.home.faq3q, a: t.home.faq3a },
-            { q: t.home.faq4q, a: t.home.faq4a },
-            { q: t.home.faq5q, a: t.home.faq5a },
-          ]}
-        />
+        <HomeFaq title={t.home.faqTitle} items={faqs} />
 
         <section className="relative z-10 px-4 py-16 sm:px-6 sm:pb-20 lg:px-10 lg:pb-24">
           <Reveal className="mx-auto max-w-5xl rounded-2xl border border-line bg-void-2 px-5 py-12 text-center sm:rounded-3xl sm:px-12 sm:py-14">

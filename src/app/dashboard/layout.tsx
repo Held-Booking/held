@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { BRAND } from "@/lib/constants";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DashboardNav } from "@/components/dashboard/DashboardNav";
@@ -7,9 +6,14 @@ import { SetupNotice } from "@/components/dashboard/SetupNotice";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { NOINDEX } from "@/lib/seo";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { isMissingSchema } from "@/lib/supabase/errors";
 import { createServerSupabase } from "@/lib/supabase/server";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
+export const metadata: Metadata = { robots: NOINDEX };
 
 export default async function DashboardLayout({
   children,

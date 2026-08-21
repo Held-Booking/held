@@ -21,12 +21,14 @@ export function SiteFooter({
     privacy: string;
     contact: string;
     help: string;
+    how: string;
     security: string;
     line: string;
   };
 }) {
   const links = [
     { href: "/pricing", label: labels.pricing },
+    { href: "/how-it-works", label: labels.how },
     { href: "/help", label: labels.help },
     { href: "/security", label: labels.security },
     { href: "/contact", label: labels.contact },

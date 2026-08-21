@@ -5,8 +5,11 @@ import { getLang } from "@/lib/i18n/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
 
+import { NOINDEX } from "@/lib/seo";
+
 export const metadata: Metadata = {
   title: "New password",
+  robots: NOINDEX,
 };
 
 export default async function UpdatePasswordPage() {

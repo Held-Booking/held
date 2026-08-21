@@ -15,6 +15,7 @@ const en = {
     privacy: "Privacy",
     contact: "Contact",
     help: "Help",
+    how: "How it works",
     security: "Security",
     line: "Booking software for professionals.",
   },
@@ -210,7 +211,7 @@ const en = {
 
 const fr: typeof en = {
   nav: { home: "Accueil", demo: "Démo", pricing: "Tarifs", login: "Connexion", start: "Commencer", language: "Langue" },
-  footer: { pricing: "Tarifs", terms: "Conditions", privacy: "Confidentialité", contact: "Contact", help: "Aide", security: "Sécurité", line: "Logiciel de réservation pour professionnels." },
+  footer: { pricing: "Tarifs", terms: "Conditions", privacy: "Confidentialité", contact: "Contact", help: "Aide", how: "Comment ça marche", security: "Sécurité", line: "Logiciel de réservation pour professionnels." },
   home: {
     eyebrow: "Logiciel de réservation pour les professionnels",
     hold: "GARDER",
@@ -403,7 +404,7 @@ const fr: typeof en = {
 
 const es: typeof en = {
   nav: { home: "Inicio", demo: "Demo", pricing: "Precios", login: "Entrar", start: "Empezar", language: "Idioma" },
-  footer: { pricing: "Precios", terms: "Términos", privacy: "Privacidad", contact: "Contacto", help: "Ayuda", security: "Seguridad", line: "Software de reservas para profesionales." },
+  footer: { pricing: "Precios", terms: "Términos", privacy: "Privacidad", contact: "Contacto", help: "Ayuda", how: "Cómo funciona", security: "Seguridad", line: "Software de reservas para profesionales." },
   home: {
     eyebrow: "Software de reservas para profesionales",
     hold: "RESERVA",
@@ -596,7 +597,7 @@ const es: typeof en = {
 
 const pt: typeof en = {
   nav: { home: "Início", demo: "Demo", pricing: "Preços", login: "Entrar", start: "Começar", language: "Idioma" },
-  footer: { pricing: "Preços", terms: "Termos", privacy: "Privacidade", contact: "Contacto", help: "Ajuda", security: "Segurança", line: "Software de reservas para profissionais." },
+  footer: { pricing: "Preços", terms: "Termos", privacy: "Privacidade", contact: "Contacto", help: "Ajuda", how: "Como funciona", security: "Segurança", line: "Software de reservas para profissionais." },
   home: {
     eyebrow: "Software de reservas para profissionais",
     hold: "SEGURE",
@@ -789,7 +790,7 @@ const pt: typeof en = {
 
 const de: typeof en = {
   nav: { home: "Start", demo: "Demo", pricing: "Preise", login: "Anmelden", start: "Starten", language: "Sprache" },
-  footer: { pricing: "Preise", terms: "Bedingungen", privacy: "Datenschutz", contact: "Kontakt", help: "Hilfe", security: "Sicherheit", line: "Buchungssoftware für Profis." },
+  footer: { pricing: "Preise", terms: "Bedingungen", privacy: "Datenschutz", contact: "Kontakt", help: "Hilfe", how: "So funktioniert es", security: "Sicherheit", line: "Buchungssoftware für Profis." },
   home: {
     eyebrow: "Buchungssoftware für Profis",
     hold: "HALTE",
@@ -982,7 +983,7 @@ const de: typeof en = {
 
 const ar: typeof en = {
   nav: { home: "الرئيسية", demo: "تجربة", pricing: "الأسعار", login: "دخول", start: "ابدأ", language: "اللغة" },
-  footer: { pricing: "الأسعار", terms: "الشروط", privacy: "الخصوصية", contact: "تواصل", help: "مساعدة", security: "الأمان", line: "برنامج حجز للمهنيين." },
+  footer: { pricing: "الأسعار", terms: "الشروط", privacy: "الخصوصية", contact: "تواصل", help: "مساعدة", how: "كيف يعمل", security: "الأمان", line: "برنامج حجز للمهنيين." },
   home: {
     eyebrow: "برنامج حجز للمهنيين",
     hold: "احجز",
@@ -1175,7 +1176,7 @@ const ar: typeof en = {
 
 const zh: typeof en = {
   nav: { home: "首页", demo: "演示", pricing: "价格", login: "登录", start: "开始", language: "语言" },
-  footer: { pricing: "价格", terms: "条款", privacy: "隐私", contact: "联系", help: "帮助", security: "安全", line: "面向专业人士的预约软件。" },
+  footer: { pricing: "价格", terms: "条款", privacy: "隐私", contact: "联系", help: "帮助", how: "如何使用", security: "安全", line: "面向专业人士的预约软件。" },
   home: {
     eyebrow: "面向专业人士的预约软件",
     hold: "锁定",

@@ -1,10 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Syne } from "next/font/google";
-import { BRAND, CONTACT, PRICE } from "@/lib/constants";
+import { BRAND, CONTACT } from "@/lib/constants";
 import { isRtl } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { AuthLinkCatch } from "@/components/auth/AuthLinkCatch";
 import { FaviconSpread } from "@/components/brand/FaviconSpread";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  absUrl,
+  organizationNode,
+  siteUrl,
+  softwareNode,
+  websiteNode,
+} from "@/lib/seo";
 import "./globals.css";
 
 const sans = Plus_Jakarta_Sans({
@@ -27,16 +35,46 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${BRAND.name} · ${BRAND.tagline}`,
     template: `%s · ${BRAND.name}`,
   },
-  description: BRAND.description,
+  description:
+    "Booking software for professionals who still take clients in chat. One page, a deposit, and the date is held. $12 a month. No cut of the job.",
+  applicationName: BRAND.name,
+  authors: [{ name: CONTACT.legalName, url: absUrl() }],
+  creator: CONTACT.legalName,
+  publisher: CONTACT.legalName,
+  category: "business",
+  keywords: [
+    "booking software",
+    "appointment deposit",
+    "booking page",
+    "WhatsApp booking",
+    "no commission booking",
+  ],
+  referrer: "origin-when-cross-origin",
+  formatDetection: { telephone: false, email: false, address: false },
   manifest: "/manifest.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     title: `${BRAND.name} · ${BRAND.tagline}`,
     description: BRAND.description,
     type: "website",
+    siteName: BRAND.name,
+    locale: "en_US",
+    alternateLocale: ["fr_FR", "es_ES", "pt_PT", "de_DE", "ar_001", "zh_CN"],
   },
   twitter: {
     card: "summary_large_image",
@@ -56,6 +94,25 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
+  ...(process.env.GOOGLE_SITE_VERIFICATION ||
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google:
+            process.env.GOOGLE_SITE_VERIFICATION ||
+            process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+          ...(process.env.BING_SITE_VERIFICATION
+            ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+            : {}),
+        },
+      }
+    : process.env.BING_SITE_VERIFICATION
+      ? {
+          verification: {
+            other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION },
+          },
+        }
+      : {}),
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -90,34 +147,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              name: BRAND.name,
-              url: "https://bookheld.app",
-              applicationCategory: "BusinessApplication",
-              operatingSystem: "Web",
-              description: BRAND.description,
-              email: CONTACT.email,
-              publisher: {
-                "@type": "Organization",
-                name: CONTACT.legalName,
-                email: CONTACT.email,
-                address: {
-                  "@type": "PostalAddress",
-                  streetAddress: CONTACT.address,
-                  addressCountry: "NG",
-                },
-              },
-              offers: {
-                "@type": "Offer",
-                price: String(PRICE.monthly),
-                priceCurrency: "USD",
-              },
-            }),
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@graph": [organizationNode(), websiteNode(), softwareNode()],
           }}
         />
         <AuthLinkCatch />

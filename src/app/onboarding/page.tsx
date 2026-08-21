@@ -6,7 +6,9 @@ import { getLang } from "@/lib/i18n/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createServerSupabase } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Setup" };
+import { NOINDEX } from "@/lib/seo";
+
+export const metadata: Metadata = { title: "Setup", robots: NOINDEX };
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingPage() {

@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/marketing/LegalPage";
 import { CONTACT } from "@/lib/constants";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Privacy" };
+export const metadata: Metadata = pageMeta({
+  title: "Privacy",
+  description:
+    "What Held collects, why we collect it, who can see it, and how to ask us to change or delete it.",
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
-    <LegalPage kicker="legal" title="Privacy">
+    <LegalPage kicker="legal" title="Privacy" path="/privacy">
       <p>Last updated 20 August 2026.</p>
       <p>
         This notice explains what Held collects, why we collect it, who can see it, and how you can ask us to change or delete it. It applies to people who create a Held page and to people who book through one. Held is booking software. We are not a marketplace and we do not sell personal data. The controller is {CONTACT.legalName}, {CONTACT.address}. Write to{" "}

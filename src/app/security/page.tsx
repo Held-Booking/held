@@ -2,12 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
 import { CONTACT } from "@/lib/constants";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "Security" };
+export const metadata: Metadata = pageMeta({
+  title: "Security",
+  description:
+    "How Held handles payments, login, Google Calendar tokens, and account deletion. We do not store full card numbers.",
+  path: "/security",
+});
 
 export default function SecurityPage() {
   return (
-    <LegalPage kicker="held" title="Security">
+    <LegalPage kicker="held" title="Security" path="/security">
       <p>
         Held is booking software. We store what we need to run a page and a deposit. We do not store full card numbers.
       </p>

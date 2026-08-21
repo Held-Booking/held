@@ -11,7 +11,9 @@ import {
 import { loadVendorPage } from "@/lib/vendor-page";
 import { formatWhen } from "@/lib/when";
 
-export const metadata: Metadata = { title: "Your booking" };
+import { NOINDEX } from "@/lib/seo";
+
+export const metadata: Metadata = { title: "Your booking", robots: NOINDEX };
 export const dynamic = "force-dynamic";
 
 export default async function ManageBookingPage({

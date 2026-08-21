@@ -2,22 +2,37 @@ import type { Metadata } from "next";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { HomeFaq } from "@/components/marketing/HomeFaq";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { DEMO_SLUG, PRICE } from "@/lib/constants";
 import { dict, fill } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
+import { faqNode, pageMeta } from "@/lib/seo";
 import { formatMoney } from "@/lib/utils";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: "Pricing",
-};
+  description:
+    "Held is $12 a month or $99 a year. 14 days to set up. No marketplace. No 20% fee. Client deposits go to you.",
+  path: "/pricing",
+});
 
 export default async function PricingPage() {
   const t = dict(await getLang());
+  const faqs = [
+    { q: t.home.faq2q, a: t.home.faq2a },
+    { q: t.home.faq3q, a: t.home.faq3a },
+    { q: t.home.faq4q, a: t.home.faq4a },
+    { q: "What do I pay Held?", a: t.pricing.fees },
+  ];
   return (
     <SiteChrome>
+      <JsonLd data={faqNode(faqs)} />
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 pb-8 pt-[calc(4.75rem+env(safe-area-inset-top))] text-center sm:px-6 sm:pt-28 lg:text-start">
         <Reveal>
-          <h1 className="flex items-baseline justify-center gap-1.5 font-display leading-none lg:justify-start">
+          <Breadcrumbs items={[{ name: "Pricing", path: "/pricing" }]} />
+          <h1 className="mt-6 flex items-baseline justify-center gap-1.5 font-display leading-none lg:justify-start">
             <span className="text-5xl tracking-tight sm:text-7xl lg:text-8xl">
               {formatMoney(PRICE.monthly)}
             </span>
@@ -56,6 +71,7 @@ export default async function PricingPage() {
             </ButtonLink>
           </div>
         </Reveal>
+        <HomeFaq title={t.home.faqTitle} items={faqs} />
       </main>
     </SiteChrome>
   );
