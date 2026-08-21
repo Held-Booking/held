@@ -6,13 +6,17 @@ import { CONTACT } from "@/lib/constants";
 import { faqNode, pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "Help",
+  title: "Held booking help",
   description:
-    "Short answers about Held booking pages, deposits, passwords, and what happens if a client cancels.",
+    "Help for Held Software Limited booking pages on bookheld.app. Deposits, passwords, and what happens if a client cancels.",
   path: "/help",
 });
 
 const HELP_FAQS = [
+  {
+    q: "What is Held?",
+    a: "Held is booking software by Held Software Limited. The site is bookheld.app. A deposit holds the date. Held is not a marketplace and not a payment company.",
+  },
   {
     q: "Is a chat a booking?",
     a: "No. A booking is held when the deposit is paid through checkout.",
@@ -45,6 +49,11 @@ export default function HelpPage() {
       <JsonLd data={faqNode(HELP_FAQS)} />
       <p>
         Short answers. If you booked someone, write to them. Held is not a party to the job.
+      </p>
+
+      <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">What is Held?</h2>
+      <p>
+        Held is booking software by {CONTACT.legalName}. The site is bookheld.app. A deposit holds the date. Held is not a marketplace and not a payment company.
       </p>
 
       <h2 className="text-xl font-semibold tracking-tight text-paper sm:text-2xl">Is a chat a booking?</h2>

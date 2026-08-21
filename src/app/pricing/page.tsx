@@ -12,9 +12,9 @@ import { faqNode, pageMeta } from "@/lib/seo";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = pageMeta({
-  title: "Pricing",
+  title: "Held pricing",
   description:
-    "Held is $12 a month or $99 a year. 14 days to set up. No marketplace. No 20% fee. Client deposits go to you.",
+    "Held booking software is $12 a month or $99 a year. 14 days to set up. No marketplace. No commission on the job. Deposits go to you.",
   path: "/pricing",
 });
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "@/components/marketing/LegalPage";
-import { CONTACT, SOCIAL } from "@/lib/constants";
+import { CONTACT, SOCIAL_PROFILES } from "@/lib/constants";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
@@ -11,17 +11,8 @@ export const metadata: Metadata = pageMeta({
   path: "/contact",
 });
 
-const SOCIAL_ITEMS = [
-  { href: SOCIAL.whatsapp, label: "WhatsApp" },
-  { href: SOCIAL.instagram, label: "Instagram" },
-  { href: SOCIAL.x, label: "X" },
-  { href: SOCIAL.linkedin, label: "LinkedIn" },
-  { href: SOCIAL.facebook, label: "Facebook" },
-  { href: SOCIAL.tiktok, label: "TikTok" },
-] as const;
-
 export default function ContactPage() {
-  const socials = SOCIAL_ITEMS.filter((item) => item.href);
+  const socials = SOCIAL_PROFILES.filter((item) => item.href);
 
   return (
     <LegalPage kicker="held" title="Contact" path="/contact">

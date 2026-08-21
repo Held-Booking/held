@@ -5,7 +5,7 @@ import { VoiceOfHeld } from "@/components/marketing/VoiceOfHeld";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { BRAND, DEMO_SLUG, PRICE } from "@/lib/constants";
+import { DEMO_SLUG, PRICE } from "@/lib/constants";
 import { dict } from "@/lib/i18n";
 import { getLang } from "@/lib/i18n/server";
 import { faqNode, pageMeta } from "@/lib/seo";
@@ -14,9 +14,9 @@ import { formatMoney } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = pageMeta({
-  title: `${BRAND.name} · ${BRAND.tagline}`,
+  title: "Held · Booking software. A deposit holds the date.",
   description:
-    "Booking software for professionals who still take clients in chat. One page, a deposit, and the date is held. $12 a month. No cut of the job.",
+    "Held Software Limited makes booking software for professionals. Clients book a time on bookheld.app and pay a deposit. $12 a month. No cut of the job.",
   path: "/",
   absoluteTitle: true,
 });

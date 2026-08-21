@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BRAND, CONTACT, PRICE, SOCIAL } from "@/lib/constants";
+import { BRAND, BRAND_ALIASES, CONTACT, PRICE, SOCIAL } from "@/lib/constants";
 
 export function siteUrl() {
   const raw =
@@ -88,21 +88,21 @@ export function organizationNode() {
   const id = `${absUrl()}/#org`;
   const sameAs = [
     process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim(),
-    SOCIAL.instagram,
-    SOCIAL.x,
     SOCIAL.linkedin,
-    SOCIAL.facebook,
-    SOCIAL.tiktok,
+    SOCIAL.instagram,
+    SOCIAL.youtube,
   ].filter((url): url is string => Boolean(url));
   return {
     "@type": "Organization",
     "@id": id,
     name: CONTACT.legalName,
     legalName: CONTACT.legalName,
-    alternateName: BRAND.name,
+    alternateName: [BRAND.name, ...BRAND_ALIASES.filter((n) => n !== CONTACT.legalName)],
     url: absUrl(),
     email: CONTACT.email,
-    brand: { "@type": "Brand", name: BRAND.name },
+    slogan: BRAND.tagline,
+    description: BRAND.description,
+    brand: { "@type": "Brand", name: BRAND.name, alternateName: [...BRAND_ALIASES] },
     logo: {
       "@type": "ImageObject",
       url: absUrl("/icon-512.png"),
@@ -124,6 +124,12 @@ export function organizationNode() {
       areaServed: ["NG", "GH", "KE", "ZA", "CI", "US"],
       availableLanguage: ["English", "French", "Spanish", "Portuguese", "German", "Arabic", "Chinese"],
     },
+    knowsAbout: [
+      "booking software",
+      "appointment booking page",
+      "booking deposit",
+      "software as a service",
+    ],
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
@@ -134,7 +140,7 @@ export function websiteNode() {
     "@id": `${absUrl()}/#website`,
     url: absUrl(),
     name: BRAND.name,
-    alternateName: ["Held booking", "bookheld"],
+    alternateName: [...BRAND_ALIASES],
     description: BRAND.description,
     inLanguage: "en",
     publisher: { "@id": `${absUrl()}/#org` },
@@ -146,12 +152,15 @@ export function softwareNode() {
     "@type": "SoftwareApplication",
     "@id": `${absUrl()}/#app`,
     name: BRAND.name,
+    alternateName: [...BRAND_ALIASES],
     url: absUrl(),
     image: absUrl("/opengraph-image"),
     applicationCategory: "BusinessApplication",
     applicationSubCategory: "AppointmentSchedulingApplication",
     operatingSystem: "Web",
     description: BRAND.description,
+    keywords:
+      "Held, Held Software Limited, bookheld, booking software, booking page, appointment deposit, WhatsApp booking",
     featureList: [
       "Public booking page",
       "Deposit at checkout",

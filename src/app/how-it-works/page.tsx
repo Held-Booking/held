@@ -13,9 +13,9 @@ import { formatMoney } from "@/lib/utils";
 import { faqNode, howToNode, pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "How Held works",
+  title: "How Held booking works",
   description:
-    "Share one link. The client picks a time and pays a deposit. The date is held. Held is booking software, not a marketplace, and takes none of the job.",
+    "Held is booking software with a deposit. Share one link on bookheld.app. The client picks a time, pays, and the date is held. No marketplace cut.",
   path: "/how-it-works",
 });
 

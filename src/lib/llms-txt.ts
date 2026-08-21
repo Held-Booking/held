@@ -8,6 +8,8 @@ export function llmsTxt() {
 
 Held is booking software for professionals who still take clients in chat. A public page takes the booking. A deposit holds the date. Held is not a marketplace and not a party to the job.
 
+Also known as: Held Software Limited, BookHeld, bookheld, bookheld.app.
+
 Company: ${CONTACT.legalName}
 Address: ${CONTACT.address}
 Email: ${CONTACT.email}

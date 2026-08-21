@@ -1,18 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { BRAND, DEMO_SLUG, SOCIAL } from "@/lib/constants";
+import { BRAND, DEMO_SLUG, SOCIAL_PROFILES } from "@/lib/constants";
 import type { Locale } from "@/lib/i18n";
 import type { Theme } from "@/lib/theme";
-
-const SOCIAL_ITEMS = [
-  { href: SOCIAL.whatsapp, label: "WhatsApp" },
-  { href: SOCIAL.instagram, label: "Instagram" },
-  { href: SOCIAL.x, label: "X" },
-  { href: SOCIAL.linkedin, label: "LinkedIn" },
-  { href: SOCIAL.facebook, label: "Facebook" },
-  { href: SOCIAL.tiktok, label: "TikTok" },
-] as const;
 
 type FooterLabels = {
   product: string;
@@ -70,7 +61,7 @@ export function SiteFooter({
   labels: FooterLabels;
   theme?: Theme;
 }) {
-  const socials = SOCIAL_ITEMS.filter((item) => item.href);
+  const socials = SOCIAL_PROFILES.filter((item) => item.href);
   const year = new Date().getFullYear();
 
   return (

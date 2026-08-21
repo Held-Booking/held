@@ -5,18 +5,33 @@ import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { SiteChrome } from "@/components/marketing/SiteChrome";
 import { Reveal } from "@/components/fx/Reveal";
 import { ButtonLink } from "@/components/ui/ButtonLink";
-import { BRAND, CONTACT, PRICE, SOCIAL } from "@/lib/constants";
+import { BRAND, CONTACT, PRICE, SOCIAL_PROFILES } from "@/lib/constants";
 import { formatMoney } from "@/lib/utils";
-import { absUrl, pageMeta } from "@/lib/seo";
+import { absUrl, faqNode, pageMeta } from "@/lib/seo";
 
 export const metadata: Metadata = pageMeta({
-  title: "About Held",
+  title: "Held Software Limited",
   description:
-    "Held Software Limited makes booking software for professionals. One page, a deposit, and the date is held. Not a marketplace. Not a payment company.",
+    "Held Software Limited makes Held, the booking software at bookheld.app. A deposit holds the date. Not a marketplace. Not a payment company.",
   path: "/about",
 });
 
-const sameAs = Object.values(SOCIAL).filter(Boolean);
+const sameAs = SOCIAL_PROFILES.map((item) => item.href).filter(Boolean);
+
+const ABOUT_FAQS = [
+  {
+    q: "What is Held Software Limited?",
+    a: "Held Software Limited is the Nigerian company that makes Held, the booking software at bookheld.app. It is not a bank or a payment company.",
+  },
+  {
+    q: "What is bookheld.app?",
+    a: "bookheld.app is the website for Held. Professionals publish a booking page. Clients pay a deposit to hold the date.",
+  },
+  {
+    q: "Is Held a marketplace?",
+    a: "No. Held is software you run. $12 a month. The deposit is yours. Held takes none of the job.",
+  },
+];
 
 export default function AboutPage() {
   return (
@@ -24,24 +39,29 @@ export default function AboutPage() {
       <JsonLd
         data={{
           "@context": "https://schema.org",
-          "@type": "AboutPage",
-          "@id": `${absUrl("/about")}#page`,
-          url: absUrl("/about"),
-          name: "About Held",
-          description:
-            "Held Software Limited makes booking software for professionals. A deposit holds the date. Held takes none of the job.",
-          isPartOf: { "@id": `${absUrl()}/#website` },
-          about: { "@id": `${absUrl()}/#org` },
-          mainEntity: { "@id": `${absUrl()}/#app` },
+          "@graph": [
+            {
+              "@type": "AboutPage",
+              "@id": `${absUrl("/about")}#page`,
+              url: absUrl("/about"),
+              name: "Held Software Limited",
+              description:
+                "Held Software Limited makes booking software for professionals. A deposit holds the date. Held takes none of the job.",
+              isPartOf: { "@id": `${absUrl()}/#website` },
+              about: { "@id": `${absUrl()}/#org` },
+              mainEntity: { "@id": `${absUrl()}/#app` },
+            },
+            faqNode(ABOUT_FAQS),
+          ],
         }}
       />
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 pb-16 pt-[calc(4.75rem+env(safe-area-inset-top))] text-center sm:px-6 sm:pt-28 lg:text-start">
         <Reveal>
-          <Breadcrumbs items={[{ name: "About Held", path: "/about" }]} />
+          <Breadcrumbs items={[{ name: "Held Software Limited", path: "/about" }]} />
           <p className="mt-6 text-[10px] uppercase tracking-[0.32em] text-signal">
             held
           </p>
-          <h1 className="mt-3 font-display text-3xl sm:text-6xl">About Held</h1>
+          <h1 className="mt-3 font-display text-3xl sm:text-6xl">Held Software Limited</h1>
           <p className="mt-4 text-sm leading-relaxed text-dim sm:text-lg">
             Held is booking software. Professionals publish a page. Clients pick a time and pay a deposit. The date is then real.
           </p>
